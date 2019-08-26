@@ -72,7 +72,7 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
       </div>
       <div class="row">
         <div class="col-sm-4">
-            <button class = "btn btn-default btn-lg" type="button" onclick="Save('<?php echo $_GET['open'];?>',<?php if(isset($_GET['published']))echo true; else echo false;?>)">Save</button> 
+            <button class = "btn btn-default btn-lg" type="button" onclick="Save('<?php echo $_GET['open'];?>',<?php if(isset($_GET['published']))echo 'true'; else echo 'false';?>)">Save</button> 
           
           </div>
     <div class="col-sm-4"> 

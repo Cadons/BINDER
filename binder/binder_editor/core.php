@@ -78,8 +78,8 @@ function check_Admin($conn,$id)
             $ris=$conn->query($sql);
            
             $content=$_POST['text'];
-            
-            $content=str_replace("%27","'",$content);
+            $content=str_replace("'","%27",$content);
+          //  echo $content;
             //  $content=urldecode($_SERVER['REQUEST_URI']);
             $name="";
             $sql="SELECT * FROM articles WHERE id=".$id;
@@ -349,7 +349,7 @@ function check_Admin($conn,$id)
 
             $date=$_POST['date'];
             $content=$_POST['text'];
-            
+            $content=str_replace("'","%27",$content);
             $author=$_SESSION['log'];
             $sql="INSERT INTO publications (title,datepublish,content,author) VALUES ('$name','$date','$content','$author')";
             $conn->query($sql); 

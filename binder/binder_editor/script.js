@@ -106,7 +106,8 @@ function Upload()
 }
 function Save(id,published=false)
 {
-   var content=$( "div.ql-editor" ).html();//get html code inside the quill editor div
+   var content=$( "div.ql-editor" ).html();//get html code inside the quill editor div 
+   
     data=new FormData();
 if(!published)
 {
@@ -117,9 +118,11 @@ else
   data.append("req",'save_pub');
 }
 
- 
+content= content.replace("'","%27");
+
   data.append("id",id);
   data.append("text",content);
+  
   sendpost(data,"/binder/binder_editor/core.php","Saved","Not Saved");
 }
 function Openbyid(id, published=false)
@@ -154,7 +157,7 @@ function Open(id,pub=false)
     //console.error(data);
      // $("#opened").html(title);
       
-     
+     data=decodeURI(data);
      $( "div.ql-editor" ).html( data ); 
     }
       
@@ -237,7 +240,8 @@ function Publish()
          
             data=new FormData();
             
-           title= title.replace("'","%27");
+            title= title.replace("'","%27");
+            content=content.replace("'","%27");
             data.append("req",'publish');
             data.append("title",title);
             data.append("date",date);

@@ -164,7 +164,7 @@ function getLinkbyid(htmlid,post_page="",id)//if url location is in the same pag
             
     });
 }
-function getDataFromURL()
+function getIdFromURL()
 {
     /**
      * Use this function if you need to get post id
