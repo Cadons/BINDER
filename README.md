@@ -8,4 +8,4 @@ You can create some accounts with admin or writer privilegies, with hidden mode 
 3)Open /binder/ \
 4)Configure your binder\
 5)Llogin with your configuration account\
-6)Start to write\
+6)Start to write
