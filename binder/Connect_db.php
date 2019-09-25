@@ -30,7 +30,8 @@ namespace DatabaseMenager
 			public function Check_Admin_Credezialies($user,$psw)
 			{
 				
-				
+				$user=mysqli_real_escape_string($this->$connection,$user);
+				$psw=mysqli_real_escape_string($this->$connection,$psw);
 				$sql="select user,psw from login where user='$user' and psw='$psw'";
 				$ris=$this->connection->query($sql);
 			
