@@ -30,8 +30,12 @@ namespace DatabaseMenager
 			public function Check_Admin_Credezialies($user,$psw)
 			{
 				
-				$user=mysqli_real_escape_string($this->$connection,$user);
-				$psw=mysqli_real_escape_string($this->$connection,$psw);
+			
+				if (!get_magic_quotes_gpc()) {//if get_magic_quotes_gpc is enable add \ before escaped characters, but if it isen't on add \ with addslashes function. This instruction prevent sql injection login
+					$user = addslashes ($user);
+					$psw = addslashes ($psw);
+				  }	
+				
 				$sql="select user,psw from login where user='$user' and psw='$psw'";
 				$ris=$this->connection->query($sql);
 			

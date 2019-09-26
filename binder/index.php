@@ -38,7 +38,7 @@ if(isset($_SESSION['log']))
 		
 		$db=new DatabaseMenager\Connect_db($cred[1],$cred[2],$cred[3]);
 		$userPassword = $_POST["psw"]; 
-		$hashedUserPassword = crypt($userPassword, '$2a$07$usesomesillystringforsalt$');//creata hash for login
+		$hashedUserPassword =hash ("sha256",$userPassword);//create hash for login
 			if($db->Check_Admin_Credezialies($_POST["usr"],$hashedUserPassword))
 			{
 				$_SESSION['log']=$_POST["usr"];
@@ -52,7 +52,9 @@ if(isset($_SESSION['log']))
 		 swal ( "Login failed" ,  "Password Wrong",  "error" );
 
 		</script>
+
 	<?php
+
 	   session_destroy();	
 			}
 
@@ -60,7 +62,7 @@ if(isset($_SESSION['log']))
 
 
 ?>
-<center >
+<center>
 	<div class="loginbox">	<?php
 		if(!file_exists("config/dbaccess.json"))
 		{

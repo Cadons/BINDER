@@ -67,10 +67,7 @@ $report.="publications table creation:ok \n";
 else
 $report.="publications table creation: failed\n";
 //add user to login table
-$password = $psw;
-
-$psw = crypt($password, '$2a$07$usesomesillystringforsalt$');//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
-
+$psw=hash ("sha256",$psw);
 $sql="INSERT INTO  $db_name.login (user, psw) VALUES ('$usr', '$psw')";
 if($con->query($sql))
 $report.="User registration: ok\n";
@@ -95,6 +92,7 @@ $credenziales_json='{
     } ,
     "last_configuration": "last configuration '.$date.'",
     "isconfigurated":"ok"
+    
 }';
 $file=fopen("dbaccess.json","w");
 fwrite($file,$credenziales_json);
