@@ -9,6 +9,39 @@ function decode(x)
   x=decodeURIComponent(x);
  return x;
 }
+function getPostLength()
+{
+   
+    var length2=0;
+
+    $.get("/binder/output/binder.php?get=postlist",(data)=>
+    { 
+       
+       /*
+       to work with common variables we must nest requests in a once
+       */ 
+            var json=JSON.parse(data);
+            data="";
+            var length=Object.keys(json).length;
+            //alert(length);
+            var titlelist=new Array(length);
+            for(var i=0;i<length;i++)
+            {
+            
+                titlelist[i]=json[i];    
+                    
+            }
+           
+        localStorage.setItem("l",length);  
+    
+      
+        });
+       length2=localStorage.getItem("l");
+       localStorage.removeItem("l");
+       return length2;     
+  
+   
+}
 function getPostList(htmlid,post_page="")
 {
    
@@ -95,15 +128,22 @@ if(id==null||id<0||id=="")
           
         });
 }
-function getTitle(id,htmlid)
+function getTitle(id,htmlid="")
 {
-    $.get("/binder/output/binder.php?get=title&id="+id,(data)=>{ 
-      
-        data=decode(data);
-        $("#"+htmlid).append(data);
+ 
+ $.get("/binder/output/binder.php?get=title&id="+id,(data)=>{ 
+        
+    data=decode(data);
        
-        });
+   
+     $("#"+htmlid).append(data);     
+   
+    });
+   
+   
+         
 }
+
 function getLinkbyid(htmlid,post_page="",id)//if url location is in the same page (/?...) leave void post page
 {
 
@@ -177,7 +217,6 @@ function getIdFromURL()
     return myurl;
    
 }
-var last_post_ids;//Array
 /*
 *To use this array you must before call getLast_N_id it will create and load with your last posts id.
 then if you what print data use the other functions inside the code
@@ -187,10 +226,8 @@ function getLast_N_id(n)
     var last_post;
     $.get("/binder/output/binder.php?get=postlist",(data)=>
     { 
-       
-       /*
-       to work with common variables we must nest requests in a once
-       */ 
+       //Get articles' list
+      
             var json=JSON.parse(data);
             data="";
             var length=Object.keys(json).length;
@@ -228,16 +265,20 @@ function getLast_N_id(n)
         });
             
     });
+
     last_post=new Array(n);
     last_post=localStorage.getItem("lastn").split();
+    //load array with id of articles 
+
+
     last_post_ids=new Array(n);
     for(var i=0, j=0;j<n;i++)
     {
-        if(i%2==0)
+        if(i%2==0)//values are content inside pair position of the array, the odd posistions content comma
         {
-            if(last_post[0][i]!=null||last_post[0][i]!=""||last_post[0][i]!="undefined")
+            if(last_post[0][i]!=null||last_post[0][i]!=""||last_post[0][i]!="undefined")//cheak if datas are valid
             {
-                last_post_ids[j]=last_post[0][i];
+                last_post_ids[j]=last_post[0][i];//add id to the array
             j++;
             
             }
@@ -249,7 +290,7 @@ function getLast_N_id(n)
 
     }
     localStorage.clear();//clear local storage used to save data from get function
-
+    return last_post_ids;//return array
 }
 
 //Add quill data
@@ -269,4 +310,4 @@ function loadjscssfile(filename, filetype){
     if (typeof fileref!="undefined")
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
- 
+
