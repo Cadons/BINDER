@@ -1,5 +1,4 @@
 
-
 function decode(x)
 {
   /*
@@ -9,45 +8,37 @@ function decode(x)
   x=decodeURIComponent(x);
  return x;
 }
-function getPostLength()
+ function getPostLength()
 {
-   
-    var length2=0;
-
-    $.get("/binder/output/binder.php?get=postlist",(data)=>
-    { 
-       
-       /*
-       to work with common variables we must nest requests in a once
-       */ 
-            var json=JSON.parse(data);
-            data="";
-            var length=Object.keys(json).length;
-            //alert(length);
-            var titlelist=new Array(length);
-            for(var i=0;i<length;i++)
-            {
-            
-                titlelist[i]=json[i];    
-                    
-            }
-           
-        localStorage.setItem("l",length);  
     
-      
-        });
-       length2=localStorage.getItem("l");
-       localStorage.removeItem("l");
-       return length2;     
-  
+    var result = null;
+    var scriptUrl = "/binder/output/binder.php?get=postlist";
+    $.ajax({
+       url: scriptUrl,
+       type: 'get',
+       dataType: 'html',
+       async: false,
+       success: function(data) {
+        var json=JSON.parse(data);
+        var length=Object.keys(json).length;
+           result = length;
+       } 
+    });
+    return result;
    
+    
+ 
+          
+        
+        
 }
-function getPostList(htmlid,post_page="")
+
+function getPostList(htmlid,post_page)
 {
-   
+   post_page="";
     
 
-    $.get("/binder/output/binder.php?get=postlist",(data)=>
+    $.get("/binder/output/binder.php?get=postlist", function(data)
     { 
        
        /*
@@ -65,7 +56,7 @@ function getPostList(htmlid,post_page="")
                     
             }
 
-              $.get("/binder/output/binder.php?get=id",(data)=>{ 
+              $.get("/binder/output/binder.php?get=id",function(data){ 
        
         var json=JSON.parse(data);
         data="";
@@ -105,7 +96,7 @@ function getPostList(htmlid,post_page="")
 function getPost(id,htmlid)
 {
     //$()
-    $.get("/binder/output/binder.php?get=post&id="+id,(data)=>{ 
+    $.get("/binder/output/binder.php?get=post&id="+id,function(data){ 
        
         data=decode(data);
         $("#"+htmlid).append(data);
@@ -121,21 +112,22 @@ if(id==null||id<0||id=="")
     var url = new URL(window.location.href);
      id = url.searchParams.get("post_id");
 }
-    $.get("/binder/output/binder.php?get=article&id="+id,(data)=>{ 
+    $.get("/binder/output/binder.php?get=article&id="+id,function(data){ 
        
         data=decode(data);
+        
         $("#"+htmlid).append(data);
           
         });
 }
-function getTitle(id,htmlid="")
+function getTitle(id,htmlid)
 {
- 
- $.get("/binder/output/binder.php?get=title&id="+id,(data)=>{ 
+
+ $.get("/binder/output/binder.php?get=title&id="+id,function(data){ 
         
     data=decode(data);
        
-   
+ 
      $("#"+htmlid).append(data);     
    
     });
@@ -144,10 +136,10 @@ function getTitle(id,htmlid="")
          
 }
 
-function getLinkbyid(htmlid,post_page="",id)//if url location is in the same page (/?...) leave void post page
+function getLinkbyid(htmlid,post_page,id)//if url location is in the same page (/?...) leave void post page
 {
-
-    $.get("/binder/output/binder.php?get=postlist",(data)=>
+post_page="";
+    $.get("/binder/output/binder.php?get=postlist",function(data)
     { 
        
        /*
@@ -165,7 +157,7 @@ function getLinkbyid(htmlid,post_page="",id)//if url location is in the same pag
                     
             }
 
-              $.get("/binder/output/binder.php?get=id",(data)=>{ 
+              $.get("/binder/output/binder.php?get=id",function(data){ 
        
         var json=JSON.parse(data);
         data="";
@@ -224,61 +216,50 @@ then if you what print data use the other functions inside the code
 function getLast_N_id(n)
 {
     var last_post;
-    $.get("/binder/output/binder.php?get=postlist",(data)=>
-    { 
-       //Get articles' list
-      
+    var result = null;
+     var scriptUrl = "/binder/output/binder.php?get=id";
+     /**
+      * The difference than $.get() and $.ajax() is : $.get doesn't return the return value of the callback function. 
+      * It returns the XHR object; and $.ajax() can work with external variables and datas.
+      * If you need to return data from request use $.ajax() otherwise if you need to print data inside the page you can use $.ajax() or also $.get() methods
+      *  $.get() can't modifys external values, you can only read thouse, if you need to edit external data i adwaise to use localStorage to save datas. 
+      */
+     $.ajax({
+        url: scriptUrl,//url
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) {//this will be execute on request success [200 code]
+            //get ids and loads those insede the array idlist
             var json=JSON.parse(data);
             data="";
             var length=Object.keys(json).length;
             
-            var titlelist=new Array(length);
+            var idlist=new Array(length);
+                    
             for(var i=0;i<length;i++)
             {
-            
-                titlelist[i]=json[i];    
-                    
-            }
-
-              $.get("/binder/output/binder.php?get=id",(data)=>{ 
-       
-        var json=JSON.parse(data);
-        data="";
-        var length=Object.keys(json).length;
-        
-        var idlist=new Array(length);
                 
-        for(var i=0;i<length;i++)
-        {
-            
-            idlist[i]=json[i];    
-              
-        }
-        
-        localStorage.setItem("lastn",idlist);
-           
-          
-       
-           
-    
-      
-        });
-            
-    });
-
-    last_post=new Array(n);
-    last_post=localStorage.getItem("lastn").split();
+                idlist[i]=json[i];    
+                  
+            }
+         
+            var last_post=idlist;//last_post is an array loaded with lastn data that is a list.
     //load array with id of articles 
 
-
+/**
+ * I have deleted the parity control of chars because it works only with numbers less than 10.
+ * I remamber that the request, in the get method, returns and saves an array with the articles' ids.
+ * so the following code is more simple.
+ * This problem has caused slower loading of data inside the page and posts with id greater than or equal of 10 wasen't read
+ */
     last_post_ids=new Array(n);
     for(var i=0, j=0;j<n;i++)
     {
-        if(i%2==0)//values are content inside pair position of the array, the odd posistions content comma
-        {
-            if(last_post[0][i]!=null||last_post[0][i]!=""||last_post[0][i]!="undefined")//cheak if datas are valid
+    
+            if(last_post[i]!=null||last_post[i]!=""||last_post[i]!="undefined")//cheak if datas are valid
             {
-                last_post_ids[j]=last_post[0][i];//add id to the array
+                last_post_ids[j]=last_post[i];//add id to the array
             j++;
             
             }
@@ -286,11 +267,15 @@ function getLast_N_id(n)
          {
              break;
          }
-        }
+        
 
     }
-    localStorage.clear();//clear local storage used to save data from get function
-    return last_post_ids;//return array
+   
+            result = last_post_ids;
+        } 
+     });
+     return result;
+    
 }
 
 //Add quill data
