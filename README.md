@@ -7,5 +7,5 @@ You can create some accounts with admin or writer privilegies, with hidden mode 
 2)Paste folder in your website root folder\
 3)Open /binder/ \
 4)Configure your binder\
-5)Llogin with your configuration account\
+5)Login with your configuration account\
 6)Start to write
