@@ -8,4 +8,6 @@ You can create some accounts with admin or writer privilegies, with hidden mode 
 3)Open /binder/ \
 4)Configure your binder\
 5)Login with your configuration account\
-6)Start to write
+6)Start to write\
+Binder is developted on Apache, if you use Ngix i advise you to lock config.json in configuration file of ngix server.\
+If you are using apache i advise to disable error displaying; it could lock js scripits.
