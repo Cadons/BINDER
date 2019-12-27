@@ -1,0 +1,99 @@
+.menu-bar
+{
+    background-color: #4D6580;
+    color: white;
+    
+}
+.top-bar
+{
+   color:  white;
+   text-align: center;
+   position: sticky;
+}
+.left-bar
+{
+  float: left;
+  width: 15%;
+  height: 100vh; 
+}
+.label-menu{
+    background-color: #737980;
+    width: 100%;
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    padding: 5px;
+    text-align: center;
+    
+
+}
+a,a:hover{
+    color: white;
+    text-decoration: none; 
+}
+.menu-list
+{
+    padding: 0;
+    list-style: none;
+}
+.content-box
+{
+    padding: 5px;
+   width: 85%;
+   height: 100vh;
+   margin-left: 15%;
+   margin-right:0;
+   background-color:whitesmoke ;
+}
+hr{
+    width: 100%;
+}
+.ql-toolbar{
+   height: 5%;
+    
+}
+.editor
+{
+    
+     height:80vh;
+}
+/*Responsive roles*/
+/*Enable mobile controls when sceen is smaller than 1124 px*/
+@media screen and (max-width:1124px)
+{
+    /*Disable Desktop Controls*/
+    .left-bar
+    {
+        display: none !important;
+    }
+  /*Resize contentBox*/
+    .content-box
+    {
+        width: 100%;
+        margin-left: 0;
+    }
+/*Enable Hamburger icon*/
+    #hamburger 
+    {
+        display: block !important;
+    
+    }
+
+}
+
+/*Disable mobile controls when sceen is bigger than 1124 px*/
+@media screen and (min-width:1124px)
+{
+
+    #hamburger 
+    {
+        display: none !important;
+       
+    }
+    #Menu
+    {
+        display: none !important;
+    }
+
+}
+

@@ -41,6 +41,7 @@
             
             return $get["database_access"]['password'];
         }
+
         public function getDatabase_Name()
         {
             $get=array();
@@ -55,13 +56,53 @@
         }
         public function getJSON()
         {
-            $json=file_get_contents(__DIR__."/dbaccess.json");
+            $json=file_get_contents(__DIR__."/config.json");
             //    var_dump($json);
                $data = json_decode($json, true);
                //var_dump($data); // print array
             //  $result=array("username","password","database_name","host");
                     return $data;            
         }
+//email credentialies
+   
+        public function getSMTPaddress()
+        {
+            $get=array();
+            $get= $this->json;
+            return $get["email"]['address'];
+        }
+        public function getSMTPport()
+        {
+            $get=array();
+            $get= $this->json;
+            return $get["email"]['port'];
+        }
+        public function getSMTPusername()
+        {
+            $get=array();
+            $get= $this->json;
+            return $get["email"]['username'];
+        }
+        public function getSMTPpassword()
+        {
+            $get=array();
+            $get= $this->json;
+            return $get["email"]['password'];
+        }
+        public function getEmailType()
+        {
+            $get=array();
+            $get= $this->json;
+            return $get["email"]['mail'];
+        }  
+         //get last edit
+         public function getLastEdit()
+         {
+             $get=array();
+             $get= $this->json;
+             return $get['last_configuration'];
+         }  
    }
+
 
 ?>

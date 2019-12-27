@@ -1,6 +1,7 @@
 <!DOCTYPE html>
     <?php
     session_start();
+   
     if(!isset($_SESSION['log']))
     {
         session_destroy();
@@ -11,49 +12,39 @@
 <html>
 <head>
     <title>Article Menager</title>
-    <meta name="viewport" content="width=device-width, user-scalable=no,
+    
+<meta name="viewport" content="width=device-width, user-scalable=no,
 initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
-        <link href="style.css" rel="stylesheet">
-        <script src="script.js"></script>
-        <script src="/binder/resources/script.js"></script>
-              <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-<!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="shortcut icon" href="/binder/resources/favicon.ico" />
+<link rel="manifest" href="resources/favicon/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<!--Icons Pack-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+     <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
+        <script src="/binder/resources/script.js"></script>
+        <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--Main stylesheet-->
+<link rel="stylesheet" href="resources/template/body.css">
+<!-- jQuery library -->
+
 
 <!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> 
+  
         <meta charset="UTF-8">
         <script>
       isAdminList('<?php echo $_SESSION['log']; ?>');
     </script>
 </head>
 <body>
-
-<div class="articlelist">
-        <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                  <div class="navbar-header">
-                    <a class="navbar-brand" href="/binder/menager.php">BINDER</a>
-                  </div>
-                  <ul class="nav navbar-nav">
-                    <li><a onclick="New()" style="cursor: pointer">New article</a></li>
-                    <li><a href="?">My Articles</a></li>
-                    <li><a href="?published">My Publications</a></li>
-                    <li  id="account_menager"><a href="/binder/account.php">Accounts Menager</a></li>
-                    <li><a href="/binder/output/">Publications</a></li>
-                  </ul>
-                  <ul class="nav navbar-nav navbar-right">
-                   
-                    <li><a onclick="logout()" style="cursor: pointer"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                  </ul>
-                </div>
-              </nav>
-      
-    
+<?php 
+ include('resources/general_body.php');
+ BodyStart();?>
    
         <h4>
         <?php
@@ -67,30 +58,36 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
         }
         ?>    
         </h4>
+
         <hr>
         <div class="input-group">
                 <input type="text" class="form-control" id="searchbar" placeholder="Search">
                 <div class="input-group-btn">
-                  <button class="btn btn-default" type="submit" onclick="Search(this.id)" id="<?php if(isset($_GET['published'])) echo 'publications';else echo 'articles'; ?>">
-                    <i class="glyphicon glyphicon-search"></i>
+                  <button type="button" class="btn btn-outline-secondary" type="submit" onclick="Search(this.id)" id="<?php if(isset($_GET['published'])) echo 'publications';else echo 'articles'; ?>">
+                  <span><img src="/binder/resources/template/icons/search.png" width="50%"></span>
                   </button>
                 </div>
               </div>
        
        
-    
+    <div class="listh">
     <div class="art_table">
+   
+</div>
      <table class="table list"  id="data_table">   
            <thead>
             <th>Title</th>
             <th>Last edit</th>
-            <th>Edit</th>
-            <th>Preview</th> 
-            <th>Publish</th>
             <th>Delete</th>
         </thead>
         <tbody id="tab">
       </tbody>
+      <ul class="pagination justify-content-center" >
+  <li class="page-item"><a class="page-link" href="#" onclick="PreviosPage()">Previous</a></li>
+  <ul class="pagination justify-content-center"  id="pageNumber"></ul>
+  <li class="page-item"><a class="page-link" href="#" onclick="NextPage()">Next</a></li>
+</ul>
+<button class ='btn btn-primary btn-sm' onclick="DeleteSelection()" id="sel_btn_del" disabled>Delete selected <i class='fas fa-trash'></i></button>
 <?php
 if(!isset($_GET['published']))
 {
@@ -108,19 +105,9 @@ else
 ?>
 
 </table>
-</div>
-<div id="sharebox">
 
-        <h3>PUBLISH YOUR ARTICLE</h3>
-        <label>Title</label><input type="text" id="title" class="form-control" ><br>
-        <label>Date</label><input type="date" id="date" class="form-control" ><br>
-        <button class = "btn btn-default btn-lg" onclick="Publish()" >Publish</button>
-        <br>      <br>
-        
-        <button onclick="Close()" class="btn btn-default">Close</button>
-  
-      </div>
-      <center><label>©Cadonsweb</label></center>
-</div>
+</div></div>
+
+<?php   BodyEnd();?>
 </body>
 </html>

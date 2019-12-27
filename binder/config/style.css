@@ -1,8 +1,17 @@
 .mainbox
 {
     margin: auto;
-    background-color: white;
+    background-color: rgb(77,101,127);
     text-align: center;
+    color: white;
+    height: 50%;
+}
+#bill
+{
+  color: white;
+}
+body{
+  background-color: whitesmoke;
 }
 button
 {
@@ -32,7 +41,7 @@ input.form-control{
 {
     margin-left: 20%;
     margin-right: 20%;
-    background-color: white;
+   
 }
     
   }
@@ -48,7 +57,7 @@ input.form-control{
     {
         margin-left: 20%;
         margin-right: 20%;
-        background-color: white;
+       
     }
     
   }
@@ -64,7 +73,7 @@ input.form-control{
     {
         margin-left: 20%;
         margin-right: 20%;
-        background-color: white;
+       
     }
     
   }

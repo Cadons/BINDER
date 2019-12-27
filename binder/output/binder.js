@@ -97,7 +97,8 @@ function getPost(id,htmlid)
 {
     //$()
     $.get("/binder/output/binder.php?get=post&id="+id,function(data){ 
-       
+        loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.css", "css");
+    loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.js", "js");
         data=decode(data);
         $("#"+htmlid).append(data);
           
@@ -105,8 +106,11 @@ function getPost(id,htmlid)
 }
 function getPostText(id,htmlid)
 {
-    loadjscssfile("/binder/output/style.css", "css") //dynamically load and add this .js file
+    loadjscssfile("/binder/output/style.css", "css"); //dynamically load and add this .js file
+    loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.css", "css");
+    loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.js", "js");
 
+    
 if(id==null||id<0||id=="")
 {
     var url = new URL(window.location.href);
@@ -277,7 +281,37 @@ function getLast_N_id(n)
      return result;
     
 }
+function Search(target)
+{
+    var datas;
+    $.ajax({
+        url: "/binder/output/binder.php?get=search&target="+target,//url
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) 
+        {
+            /**
+             * data return all datas of record
+             */
+            json=JSON.parse(data);
+           datas=json;
+           /**
+            * Index of objects    
+            * n=it is the index of item inside json result  
+            *     [n][0]["id"];
+                  [n][1]["title"];
+                  [n][2]["datepublish"];
+                  [n][3]["author"];
+                  [n][4]["Preview"];
+                  [n][5]["content"]; 
 
+            */
+        }
+
+});
+return datas;
+}
 //Add quill data
 
 function loadjscssfile(filename, filetype){
@@ -294,5 +328,15 @@ function loadjscssfile(filename, filetype){
     }
     if (typeof fileref!="undefined")
         document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function getDataFromURL() {
+    /**
+     * Use this function if you need to get post id
+     *
+     */
+    var myurl;
+    var url = new URL(window.location.href); //get my url
+    myurl = url.searchParams.get("post_id"); //search get parameter in the url string
+    return myurl;
 }
 

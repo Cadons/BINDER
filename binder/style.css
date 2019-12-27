@@ -11,9 +11,10 @@
 .articlelist
 {
    
-    background-color: white;
+    background-color: whitesmoke;
     
 }
+
 .create_account
 {
   display: block;
@@ -27,10 +28,16 @@
 }
 .loginbox
 {
-    background-color: rgb(66, 139, 173);
+    background-color:rgb(77,101,127);
     color: white;
     border-radius: 25px;
     height: 600px;
+    margin: auto;
+    text-align: center;
+}
+tr
+{
+  height: 10px;
 }
 .art_table
 {
@@ -68,13 +75,14 @@
     {
         margin-left: 20%;
         margin-right: 20%;
+        height: 100%;
         background-color: white;
     }
     .loginbox
     {
     
         width: 50%;
-       
+      
        
         margin-top: 15%;
     }
@@ -84,7 +92,9 @@
     ##Device = Tablets, Ipads (portrait)
     ##Screen = B/w 768px to 1024px
   */
-  
+ .listh{
+  height: 100vh;
+ } 
   @media (min-width: 768px) and (max-width: 1024px) {
     
     .articlelist
@@ -163,3 +173,14 @@
 td>button{
   width: 100%;
 }
+.inst
+{
+  display: none;
+  transition: 3s ease;
+}
+.bodyLogin
+{
+  background-color: whitesmoke;
+}
+
+

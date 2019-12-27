@@ -1,42 +1,27 @@
-/*
-IMPORTANT:
-The keywords -hastag and -e are reserved for special chars like # and &.
-It should be better use ascii code for encoding and decoding for the url, (for the get request),
-but chrome block the request when there is theese characters, error: (block:other)
-This system could be change in the future.
+/**
+ * BINDER
+ * CLIENT SCRIPT MENAGER
+ */
 
 
-function Special_Characters_encodeURL(content)
-{
-  for(var i=0;i<content.length;i++)
-    {
-content=content.replace("#","-hastag");
-content=content.replace("'","-ap");
-content=content.replace("&","-e");
-content=content.replace("&amp","-e");
+//-------------------------------------------------------WARNING--------------------------------------------------------------
+/** 
+*IMPORTANT:
+*The keywords -hastag and -e are reserved for special chars like # and &.
+*It should be better use ascii code for encoding and decoding for the url, (for the get request),
+*but chrome block the request when there is theese characters, error: (block:other)
+*This system could be change in the future.
+*/
+//------------------------------------------------------------GLOBAL VARIABLES------------------------------------------------
+var title_selected;
+var emailUpdate;
+//------------------------------------------------------------FUNCTIONS-------------------------------------------------------
 
-    }
-return content;
-}
-function Special_Characters_dencodeURL(content)
-{
-  for(var i=0;i<content.length;i++)
-    {
-  content=content.replace("-ap ","'");
-  content=content.replace("-hastag","#"	);
-  content=content.replace("-e","&");
-  content=content.replace("-e","&amp");
-    }
-    return content;
-}*/
-function OpenSharePanel(id)
-{
-    title_selected=id;
-    $("#sharebox").show();
-}
 function Close()
 {
-    $("#sharebox").hide();
+  $(function () {
+    $('#Publish').modal('toggle');
+ });
 }
 function decode(x)
 {
@@ -51,44 +36,31 @@ function Search(tb)
 {
  var target=$("#searchbar").val();
  target=target.replace("'","%27");
- 
- data=new FormData();
- data.append("req", "search");
- data.append("target", target);
- data.append("in", tb);
+ //console.log(target);
+
   var req=$.ajax
   ({ 
- url: "/binder/binder_editor/core.php",
- type: 'POST',
- dataType: 'text',  // what to expect back from the PHP script, if anything
- cache: false,
- contentType: false,
- processData: false,
- data: data
-      
+ url: "/binder/binder_editor/core.php?req=search&target="+target+"&in="+tb,
+ type: 'GET',    
   });
   
 req.done(function (data) 
 
 {	
 data=decode(data);
-  var json=JSON.parse(data);
+  var articlesData=JSON.parse(data);
   
-  $("#data_table").empty();
+  $("#tab").empty();
+ 
   if(tb=="articles")
-  {
-    for(var i=0;i<json.length;i++)
-  { var output='<tr><td>'+json[i][0]+'</td><td>'+json[i][1]+'</td><td><button class = "btn btn-default btn-lg" id='+json[i][2]+' onclick="Edit(this.id)">Edit</button></td><td><button class = "btn btn-default btn-lg" onclick="Preview(this.id)"  id='+json[i][2]+'>Preview</button></td><td><button class = "btn btn-default btn-lg" onclick="OpenSharePanel(this.id)" id='+json[i][2]+'>Publish</button></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+json[i][0]+'>Delete</button></td></tr>';
-    $("#data_table").append(output);
-  }
+  { 
+    SetPageNumber(false,articlesData.length);
+    PrintArticleList(articlesData,articlesData.length);
   }
   else
   {
-    for(var i=0;i<json.length;i++)
-    { var output=' <tr><td>'+json[i][0]+'</td><td>'+json[i][1]+'</td><td><button class = "btn btn-default btn-lg" id='+json[i][2]+' onclick="Edit(this.id)">Edit</button></td><td><button class = "btn btn-default btn-lg" onclick="Preview(this.id)"  id='+json[i][2]+' disabled>Preview</button></td><td><button class = "btn btn-default btn-lg" onclick="OpenSharePanel(this.id)" id='+json[i][2]+' disabled>Publish</button></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+json[i][0]+'>Delete</button></td></tr>';
-
-    $("#data_table").append(output);
-    }
+    SetPageNumber(true,articlesData.length);
+    PrintArticleList(articlesData,articlesData.length,true);
   }
   
 });
@@ -153,23 +125,25 @@ function Create_Account()
 
  
   
-    var username=$("#usr").val(),password=$("#psw").val();
+    var username=$("#usr").val(),password=$("#psw").val(),email=$("#email").val();
+
     var conf=$("#pswconf").val();
-    console.log(username);
-    console.log(password);
+    //console.log(username);
+    //console.log(password);
   
    // alert(sel);
     if(sel==""||sel==null)
     {
       sel="writer";
     }
-    if((username!=null&&password!=null&&conf!=null)&&(username!=""&&password!=""&&conf!=""))
+    if((username!=null&&password!=null&&conf!=null&&email!=null)&&(username!=""&&password!=""&&conf!=""&&email!=""))
     {
       if(password==conf)
       {
         data=new FormData();
         data.append("usr",username);
         data.append("psw",password);
+        data.append("email",email);
         data.append("class",sel);
         data.append("add",'1');
         var req=$.ajax
@@ -194,7 +168,9 @@ function Create_Account()
         $('.create_account').find('input:password').val('');//clear the form data
         
 
-        Close_New_Usr_Panel();
+        $(function () {
+          $('#create_account').modal('toggle');
+       });
       Account_List();
         
     });
@@ -227,7 +203,7 @@ function Account_List()
     {
       var onclick="Delete_Account('"+res[i]+"')";
       var onclickedit="Open_Update_Usr_Panel('"+res[i]+"')";
-      var out="<tr><td style='text-align:center;><label '>"+res[i]+"</label></td><td><button class ='btn btn-default btn-lg' style='width:100%;' onclick="+onclick+">Delete</button></td><td><button style='width:100%;' class ='btn btn-default btn-lg' onclick="+onclickedit+">Edit</button></td></tr>";
+      var out="<tr><td style='text-align:center;vertical-align: middle;'><h6>"+res[i]+"</h6></td><td><button class ='btn btn-default btn-lg' style='width:100%;' onclick="+onclick+"><i class='fas fa-trash'></i></button></button></td><td><button style='width:100%;' class ='btn btn-default btn-lg' data-toggle='modal' data-target='#update_account' onclick="+onclickedit+">Edit</button></td></tr>";
       $("#account_list").append(out);
     }
 
@@ -254,10 +230,17 @@ function Delete_Account(usr)
   
 }
 function Open_Update_Usr_Panel(usr)
-{  $("#account").hide();
+{  
+  $("#account").hide();
 $("#update_account").show();
 $("#usru").empty();
 $("#usru").append(usr);
+
+
+$.get("/binder/config/account_core.php?get_email&usr="+usr, (data)=>{
+  $("#mailu").val(data);
+  setEmail();
+});
 $.get("/binder/config/account_core.php?isadmin&usr="+usr, (data)=>{
   if(data=='ok')
   {
@@ -273,17 +256,25 @@ $.get("/binder/config/account_core.php?isadmin&usr="+usr, (data)=>{
 }
 function Close_Update_Usr_Panel()
 {
-$("#update_account").hide();
+
+$(function () {
+  $('#update_account').modal('toggle');
+});
+}
+
+function setEmail()
+{
+  emailUpdate= $("#mailu").val();
 }
 function Update_Account()
 {
 var go=true;
  
     sel=$("#permissionsu").val();
-    var username=$("#usru").html(),password=$("#pswu").val();
+    var username=$("#usru").html(),password=$("#pswu").val(),email=emailUpdate;
     var conf=$("#pswconfu").val();
-    console.log(username);
-    console.log(password);
+    //console.log(username);
+    //console.log(password);
   
    // alert(sel);
     if(sel==""||sel==null)
@@ -305,8 +296,9 @@ var go=true;
    
     if(go)
     {
-    data=new FormData();
+      data=new FormData();
       data.append("usr",username);
+      data.append("email",email);
       if(password!=""&&password!=null)
       {
         data.append("psw",password);
@@ -355,6 +347,7 @@ var go=true;
   
 }
 
+//Articles controls
 function isAdmin(usr)
 {
 
@@ -420,3 +413,389 @@ req.fail(function (jqXHR, textStatus) {
 
   swal ( "Error" ,  error ,  "error" ); });
 }
+function Edit(name)
+{
+    location.href="binder_editor/?open="+name;
+}
+
+
+
+function Delete(id)
+{
+
+  if(window.location.href.indexOf("published")<0)
+  {
+    $.get("/binder/binder_editor/core.php?req=getbyid&id="+id, function( data ) {
+
+  /*
+
+  data is response variable, and on response insert the code of the database inside the quill editor div
+  */
+        json=JSON.parse(data);
+        data=decodeURI(json[0]);
+        var ok=confirm("Are you sure to delete "+data+"?");
+        if(ok)
+        {
+          $.get("/binder/binder_editor/core.php?req=delete&id="+id, function( data ) {
+          if(data!="not_found")
+          {
+              
+          alert("Article deleted");
+          }
+          else
+            alert("article not found");
+        /*
+
+        data is response variable, and on response insert the code of the database inside the quill editor div
+        */
+        
+        });
+        location.reload();
+        }
+});
+  }
+  
+  else
+  Delete_pub(id); 
+}
+function Delete_pub(id)
+{
+  $.get("/binder/binder_editor/core.php?req=getbyid_pub&id="+id, function( data ) {
+   
+  /*
+
+  data is response variable, and on response insert the code of the database inside the quill editor div
+  */
+        json=JSON.parse(data);
+        data=decodeURI(json[0]);
+        var ok=confirm("Are you sure to delete "+data+"?");
+    
+    if(ok)
+    {
+      $.get("/binder/binder_editor/core.php?req=delete_pub&id="+id, function( data ) {
+      if(data!="not_found")
+      {
+         
+      alert("Article deleted");
+      }
+      else
+        alert("article not found");
+    /*
+  
+    data is response variable, and on response insert the code of the database inside the quill editor div
+    */
+    
+  });
+  location.reload();
+    }
+  });
+}
+function New()
+{
+  var name=prompt("Insert article name");
+  data=new FormData();
+
+  if(name!=""&&name!=null)
+  {
+       data.append("req","create");
+  data.append("title",name);
+  sendpost(data,"/binder/binder_editor/core.php","Article created","Article not created");
+ 
+  location.reload();
+  }
+  else
+  return;
+  
+}
+//Logout
+function logout()
+{
+  $.get("/binder/binder_editor/core.php?req=logout");
+  location.href="/binder";
+}
+
+//Display Datas functions
+
+//Get main lists 
+
+var SelectedArticles=[];
+function Select(id)
+{
+  if($("#"+id).prop("checked")==true)
+  {
+    //add selection to the array
+      SelectedArticles.push(id);
+  }
+  else
+  {
+    //Compact the array
+    var index=SelectedArticles.indexOf(id);
+    for(var i=index;i<SelectedArticles.length;i++)
+    {
+      SelectedArticles[i]=SelectedArticles[i+1];
+    }
+    SelectedArticles.length--;
+
+    
+    
+  }
+//If array is void the button will be disabled
+  if(SelectedArticles.length>0)
+  $("#sel_btn_del").prop( "disabled", false );
+  else
+  $("#sel_btn_del").prop( "disabled", true );
+
+  //console.log(SelectedArticles.toString());
+}
+function DeleteSelection()
+{
+
+    for(var i=0;i<SelectedArticles.length;i++)
+    {
+      Delete(SelectedArticles[i]);
+    }
+
+}
+function GetList(published=false)
+{
+
+ 
+
+  //setup
+  var n=0;
+  url=new URLSearchParams(document.location.search);
+  page=url.get('page');
+  if(page==""||page==null||page<1)
+    page=1;
+
+    //print Data
+  if(published)
+  {//Published
+    
+    SetPageNumber(true);//set pages bar
+    
+    var req=$.ajax
+    ({ 
+   url: "/binder/binder_editor/core.php?published&req=getlist&page="+page,
+   type: 'GET',
+    });
+    
+    req.done(function (data) 
+        {	
+
+         articlesData=JSON.parse(data);
+         
+        PrintArticleList(articlesData,articlesData.length,true);
+         
+        });
+  }
+  else
+  {//Private Articles
+    SetPageNumber();//set pages bar
+    
+            var req=$.ajax
+            ({
+          url: "/binder/binder_editor/core.php?req=getlist&page="+page,
+          type: 'GET',
+            });
+            
+            req.done(function (data) 
+            {	
+                  articlesData=JSON.parse(data);  
+                  PrintArticleList(articlesData,articlesData.length);
+                  
+            
+            });
+      
+} 
+
+
+}
+
+//Print datas and add elemento to the table
+function PrintArticleList(articlesData='',n,pub=false)
+{
+
+    for(var i=0;i<n;i++)
+      {
+  
+        if(!pub)
+        {   
+          var isDelivered="";
+           if(articlesData[i][3]==1)
+           {
+              isDelivered="[published]"
+           }
+                  myout='<tr><td><input type="checkbox" onclick="Select('+articlesData[i][0]+')" id='+articlesData[i][0]+' class="checkbox-inline"> <a href="#" onclick="Edit('+articlesData[i][0]+')" style="color:black;">'+articlesData[i][1]+isDelivered+'</a></td><td><b>'+articlesData[i][2]+'</b></a></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+articlesData[i][0]+'><i class="fas fa-trash"></i></button></td></tr>';       
+
+        }
+        else
+        myout='<tr><td><input type="checkbox" onclick="Select('+articlesData[i][0]+')" id='+articlesData[i][0]+' class="checkbox-inline"> <a href="#" onclick="Edit('+articlesData[i][3]+')" style="color:black;">'+articlesData[i][1]+'</a></td><td><b>'+articlesData[i][2]+'</b></a></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+articlesData[i][0]+'><i class="fas fa-trash"></i></button></td></tr>';       
+
+        $("#tab").append(myout);
+      }
+
+}
+
+//this function works on navigation button for the multiple pages. they are used when you have more then 10 articles
+function SetPageNumber(pub=false,search=-1)
+{  
+
+  $("#pageNumber").empty();
+ var articlesNumber;
+
+  if(!pub)
+  {
+    /*
+    If you are searching some data your navbar will configurate with the right number of pages
+    */
+    if(search==-1)
+    articlesNumber=getListLength();
+    else
+    articlesNumber=search;
+
+   if(articlesNumber>10&&articlesNumber<200)
+   {
+    $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?&req=getlist&page=1">1</a></li>');
+       for(var i=articlesNumber,j=2;i>0;i-=10)//10 articles for page
+    {
+      if(i>10)
+      {
+         $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?req=getlist&page='+j+'">'+j+'</a></li>');
+          j++;
+      }
+     
+    }
+  } 
+   else
+  {
+   $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?&req=getlist&page=1">1</a></li>');
+  }
+  }
+  else
+  {
+    if(search==-1)
+    articlesNumber=getListLength("published");
+    else
+    articlesNumber=search;
+   if(articlesNumber>10)
+   {
+    $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?published&req=getlist&page=1">1</a></li>');
+       for(var i=articlesNumber,j=2;i>0;i-=10)//10 articles for page
+    {
+      if(i>10)
+      {
+         $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?published&req=getlist&page='+j+'">'+j+'</a></li>');
+          j++;
+      }
+     
+    }
+   }
+   else
+   {
+    $("#pageNumber").append('<li class="page-item"><a class="page-link" href="?published&req=getlist&page=1">1</a></li>');
+   }
+  
+  }
+  
+return articlesNumber; 
+  
+
+}
+//return the list length
+function getListLength(p='')
+{
+  articlesNumber=$.ajax
+      ({
+        url:"/binder/binder_editor/core.php?"+p+"&req=getlistnumber",
+        type: "GET",
+        data:"" ,
+        async: false
+      }
+     ).responseText;
+     return articlesNumber;
+}
+
+//List buttons
+function PreviosPage()
+{
+  url=new URLSearchParams(document.location.search);
+  page=url.get('page');
+  
+  if(page==null||page=="")
+  {
+    page=1; 
+  }
+  if(--page>=1)
+  {
+    
+  var pubstatus="&";
+  if(url.has("published"))
+    pubstatus="published"+pubstatus;
+
+  location.href="menager.php?"+pubstatus+"&req=getlist&page="+page;
+  }else
+  {
+    page++;
+  }
+  
+}
+
+function NextPage()
+{
+  
+  url=new URLSearchParams(document.location.search);
+  page=url.get('page');
+  if(page==null||page=="")
+    {
+      page=1; 
+    }
+   
+  if(++page<=getListLength()||++page<=getListLength('published'))
+  {
+   var pubstatus="&";
+    
+    if(url.has("published"))
+      pubstatus="published"+pubstatus;
+
+    location.href="menager.php?"+pubstatus+"req=getlist&page="+page;
+  }else
+  {
+    page--;
+  }
+
+}
+
+
+
+
+//System Settings
+
+function SMTP_settings(disabled)
+{
+
+  if(disabled==true)
+  {
+    
+    for(var i=0;i<4;i++)
+    {
+      j=i+1;
+      $("#smtp"+j).prop("disabled",true);
+    }
+  }
+  else
+  {
+    for(var i=0;i<4;i++)
+    {
+      j=i+1;
+      $("#smtp"+j).prop("disabled",false);
+    }
+  }
+
+}
+//Responsive Page
+
+
+/**
+ * CADONS-BINDER
+ */

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Binder</title>
+        <!-- Latest compiled and minified CSS -->
+        <script src="https://cdn.quilljs.com/1.2.2/quill.min.js"></script>
+        <link href="https://cdn.quilljs.com/1.2.2/quill.snow.css" rel="stylesheet">
+        <script src="image-resize.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">     
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="template/body.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
+        <script src="../resources/script.js"></script>
+        <script src="script.js"></script>
+<!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+       <nav class="menu-bar top-bar">
+           <div>
+            <div class="row">
+                <div class="col-2">
+                        <a href="#"><h1>BINDER</h1></a>
+                </div>
+             
+            
+           </div>
+           
+      
+       </nav>  
+       <nav class="menu-bar left-bar">
+           
+         <div style="width: 100%;">
+             <ul class="menu-list">
+                 <li>
+                <a href="#"><p class="label-menu">Your Articles</p></a>
+                </li>
+                <li>
+                <a href="#"><p class="label-menu">Your Pubblications</p></a>
+                </li>
+                <li>
+                <a href="#"><p class="label-menu">Create New</p></a>
+                </li>
+                <li>
+                <a href="#"><p class="label-menu">Accounts Menager</p></a>
+                </li>
+                <li>
+                <a href="#"><p class="label-menu">Logout<span><img src="template/icons/logout.png" width="5%"></span></p></a>
+                </li>
+             </ul>
+            
+         </div>
+     
+       </nav>
+       <div class="content-box">
+           <!--Put here section's contents-->
+           <button type="button" class="btn btn-outline-secondary">Save</button>
+           <button type="button" class="btn btn-primary">Publish...</button>
+           <button type="button" class="btn btn-outline-secondary"><span><img src="template/icons/trash.png" width="50%"></span></button>
+           <br>
+              <div id="editor" class="editor" >
+                   
+              </div> 
+            <input type="file" name="img" id="img" type="button" style="display:none"  accept="image/*">    
+           
+     
+       </div>
+      
+    </body>
+</html>

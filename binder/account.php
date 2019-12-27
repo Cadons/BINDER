@@ -12,68 +12,60 @@
 <html>
 <head>
         <title>Accounts Menager</title>
-     
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <meta name="viewport" content="width=device-width, user-scalable=no,
-        initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
-        <link href="style.css" rel="stylesheet">
-        <script src="script.js"></script>
-        <script src="/binder/resources/script.js"></script>
-              <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
+   <script src="/binder/resources/script.js"></script>
+   <link rel="shortcut icon" href="/binder/resources/favicon.ico" />
+   <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--Main stylesheet-->
+<link rel="stylesheet" href="resources/template/body.css">
+<!-- jQuery library -->
 
-          <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-          <!-- Latest compiled JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <meta charset="UTF-8">  
+<!--Icons Pack-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> 
+<script src="/binder/output/binder.js" ></script>
+   <meta charset="UTF-8">
          <script>
             isAdmin('<?php echo $_SESSION['log']; ?>');
           </script>
 </head>
 <body>
+<?php 
+include('resources/general_body.php');
+ BodyStart();?>
+<h4>Accounts Menager</h4>
+<hr>
+              <button class = "btn btn-default btn-lg" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/add.png" width="50%"></button> 
+              <button class = "btn btn-default btn-lg" type="button" onclick="Account_List()"><img src="/binder/resources/template/icons/update.png" width="50%"></button> 
+           
+            
+            <div><br>
+            
+                <table class="table table-bordered" id="account_list">
 
-<div class="articlelist">
-        <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                  <div class="navbar-header">
-                    <a class="navbar-brand" href="/binder/menager.php">BINDER</a>
-                  </div>
-                  <ul class="nav navbar-nav">
-                    <li><a onclick="New()" style="cursor: pointer">New article</a></li>
-                    <li><a href="/binder/menager.php?">My Articles</a></li>
-                    <li><a href="/binder/menager.php?published">My Publications</a></li>
-                    <li id="account_menager"><a href="/binder/account.php">Accounts Menager</a></li>
-                    <li><a href="/binder/output/">Publications</a></li>
-                  </ul>
-                  <ul class="nav navbar-nav navbar-right">
-                   
-                    <li><a onclick="logout()" style="cursor: pointer"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                  </ul>
-                </div>
-              </nav>
-              <button class = "btn btn-default btn-lg" type="button" onclick="Open_New_Usr_Panel()">  <span class="glyphicon glyphicon-plus"></span></button> 
-              <button class = "btn btn-default btn-lg" type="button" onclick="Account_List()"><span class="glyphicon glyphicon-repeat"></span></button> 
-            <div class="create_account" id="account">
-                <label>Insert username</label>
-                <input type="text" id="usr" class="form-control"><br>
-                <label>Insert password</label><br>
-                <input type="password" id="psw" class="form-control"><br>
-                <label>confirm password</label><br>
-                <input type="password" id="pswconf" class="form-control"><br>
-                <label>Select permission of account</label>
-                <select class="form-control" id="permissions" onchange="permission_set()">
-                  <option value="writer" >Writer</option>
-                  <option value="admin">Admin</option>
-                </select><br>
-         
-            <button class = "btn btn-default btn-lg" style="  width:100%;" type="button" onclick="check_Usr()">Add new Account</button> <br>
-            <button class = "btn btn-default btn-lg" style="  width:100%;" type="button" onclick="Close_New_Usr_Panel()">Close</button> 
-            </div>
-            <div class="create_account" id="update_account">
-              <label>Username:</label><label id="usru"></label><br>
+                </table>
+
+   </div>
+
+<!--Dialogbox for update of the accounts-->
+      <div class="modal" tabindex="-1" role="dialog" id="update_account" aria-labelledby="PublishBox" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update User</h5>
+          </div>
+          <div class="modal-body">
+          <label>Username:</label><label id="usru"></label><br>
+              <label>email</label><br>
+                <input type="email" onclick="setEmail()" onchange="setEmail()" class="form-control" id="mailu"><br>
               <label>Insert new password</label><br>
               <input type="password" id="pswu" class="form-control"><br>
               <label>confirm new password</label><br>
@@ -83,21 +75,47 @@
                   <option value="writer" id="w" >Writer</option>
                   <option value="admin" id="a">Admin</option>
               </select><br>
-              
-            
-              
-              
-         
-          <button class = "btn btn-default btn-lg" style="  width:100%;" type="button" onclick="Update_Account()">Update Account</button> <br>
-          <button class = "btn btn-default btn-lg" style="  width:100%;" type="button" onclick="Close_Update_Usr_Panel()">Close</button> 
-          </div>
-            <div><br>
-                <table class="table table-bordered" id="account_list">
-
-                </table>
             </div>
+              <div class="modal-footer">
+              <button class="btn btn-primary" style="width: 100%;" onclick="Update_Account()">Update Account</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <!--Dialogbox for creation of the accounts--> 
+    <div class="modal" tabindex="-1" role="dialog" id="create_account" aria-labelledby="PublishBox" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+          </div>
+          <div class="modal-body">
+          <label>Insert username</label>
+                <input type="text" id="usr" class="form-control"><br>
+                <label>Insert email</label><br>
+                <input type="email"  class="form-control" id="email"><br>
+                <label>Insert password</label><br>
+                <input type="password" id="psw" class="form-control"><br>
+                <label>confirm password</label><br>
+                <input type="password" id="pswconf" class="form-control"><br>
+                <label>Select permission of account</label>
+                <select class="form-control" id="permissions" onchange="permission_set()">
+                  <option value="writer" >Writer</option>
+                  <option value="admin">Admin</option>
+                </select>
+            </div>
+              <div class="modal-footer">
+              <button class="btn btn-primary" style="width: 100%;" onclick="check_Usr()">Add Account</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>      
       
-      <center><label>©Cadonsweb</label></center>
-</div>
+     
+
+<?php BodyEnd();?>
 </body>
 </html>

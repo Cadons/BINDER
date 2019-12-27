@@ -38,9 +38,10 @@ namespace DatabaseMenager
 				
 				$sql="select user,psw from login where user='$user' and psw='$psw'";
 				$ris=$this->connection->query($sql);
-			
+				  
 				if(mysqli_num_rows($ris)>0)
 				{
+					
 					return true;
 				}
 				else

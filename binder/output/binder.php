@@ -3,9 +3,13 @@ require_once("get_data.php");
 
 $req=$_GET["get"];
 $id="";
+$target="";
 if(isset($_GET["id"]))
 $id=$_GET["id"];
-
+if(isset($_GET["target"]))
+{
+    $target=$_GET["target"];
+}
 $binder=new get_data();
 switch ($req) {
     case 'title':
@@ -24,6 +28,9 @@ switch ($req) {
         $output=$binder->GetTitleList();
         echo ($output);
         break;
+    case 'search':
+            echo $binder->Search($target);
+            break;
     default:
        echo "none";
         die();
