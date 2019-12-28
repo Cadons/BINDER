@@ -1,14 +1,6 @@
 
-function decode(x)
-{
-  /*
-  THIS FUNCTION MUST!!!! EXECUTE INSIDE THE JQUERY READY DOCUMENT FUNCTION 
-  */
-  
-  x=decodeURIComponent(x);
- return x;
-}
- function getPostLength()
+//Client functions
+function getPostLength()
 {
     
     var result = null;
@@ -37,168 +29,273 @@ function getPostList(htmlid,post_page)
 {
    post_page="";
     
-
-    $.get("/binder/output/binder.php?get=postlist", function(data)
-    { 
-       
-       /*
-       to work with common variables we must nest requests in a once
-       */ 
-            var json=JSON.parse(data);
-            data="";
-            var length=Object.keys(json).length;
-            //alert(length);
-            var titlelist=new Array(length);
-            for(var i=0;i<length;i++)
-            {
-            
-                titlelist[i]=json[i];    
-                    
-            }
-
-              $.get("/binder/output/binder.php?get=id",function(data){ 
-       
-        var json=JSON.parse(data);
-        data="";
-        var length=Object.keys(json).length;
-        //alert(length);
-        var idlist=new Array(length);
+   var titlelist;
+   post_page="";
+       $.ajax({
+           url:"/binder/output/binder.php?get=postlist",
+           type: 'get',//type of request
+           dataType: 'html',//datatype of response
+           async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+           success: function(data) {
+                /*
+          to work with common variables we must nest requests in a once
+          */ 
+         var json=JSON.parse(data);
+         data="";
+         var length=Object.keys(json).length;
         
-        for(var i=0;i<length;i++)
-        {
-            
-            idlist[i]=json[i];    
+         var titlelist=new Array(length);
+         for(var i=0;i<length;i++)
+         {
+         
+             titlelist[i]=json[i];    
+                 
+         }
+         $.ajax({
+            url:"/binder/output/binder.php?get=id",
+            type: 'get',//type of request
+            dataType: 'html',//datatype of response
+            async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+            success: function(data) {
+        
+             var json=JSON.parse(data);
+             data="";
+             var length=Object.keys(json).length;
+             //alert(length);
+             var idlist=new Array(length);
+             
+             for(var i=0;i<length;i++)
+             {
+                 
+                 idlist[i]=json[i];    
+                       
+             }
+             
+             for(var i=0;i<length;i++)
+             {
+                 
+                 
+                    var out="<a id='art"+i+"' href="+post_page+"?post_id="+idlist[i]+">"+titlelist[i]+"</a><br>";
+                 
+                 
                   
-        }
-        
-        for(var i=0;i<length;i++)
-        {
-            
-            
-               var out="<a id='art"+i+"' href="+post_page+"?post_id="+idlist[i]+">"+titlelist[i]+"</a><br>";
-            
-            
-             
-            out=decode(out);
-            
-             $("#"+htmlid).append(out);
-             
-        }
-           
-    
-      
+                 out=decode(out);
+                 
+                  $("#"+htmlid).append(out);
+                  
+             }
+                
+         
+               
+                   
+            }
         });
-            
-    });
+           }
+       });
+       
+       
+
    
 }
 
-function getPost(id,htmlid)
+function getPostListJSON()
 {
-    //$()
-    $.get("/binder/output/binder.php?get=post&id="+id,function(data){ 
-        loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.css", "css");
-    loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.js", "js");
-        data=decode(data);
-        $("#"+htmlid).append(data);
-          
+/**
+ * This function return array composed by:
+ * enum index
+ * output[n][0]=title
+ * output[n][0]=id
+ */
+   post_page="";
+    
+   var output;
+   post_page="";
+       $.ajax({
+           url:"/binder/output/binder.php?get=postlist",
+           type: 'get',//type of request
+           dataType: 'html',//datatype of response
+           async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+           success: function(data) {
+                /*
+          to work with common variables we must nest requests in a once
+          */ 
+         var json=JSON.parse(data);
+       
+         data="";
+         var length=Object.keys(json).length;
+        
+         output=new Array(length);
+         for(var i=0;i<length;i++)
+         {
+         
+            output[i]=json[i];    
+                 
+         }
+      
+         $.ajax({
+            url:"/binder/output/binder.php?get=id",
+            type: 'get',//type of request
+            dataType: 'html',//datatype of response
+            async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+            success: function(data) {
+ 
+             var json=JSON.parse(data);
+             data="";
+             var length=Object.keys(json).length;
+             //alert(length);
+             var idlist=new Array(length);
+            
+             for(var i=0;i<length;i++)
+             {
+                 
+                 idlist[i]=json[i];    
+                       
+             }
+             
+             for(var i=0;i<length;i++)
+             { 
+                 var tmp=output[i];
+                output[i]=new Array(2); 
+                output[i][0]=tmp;
+                output[i][1]=idlist[i];
+                
+
+                  
+             }
+                
+         
+               
+                   
+            }
         });
+           }
+       });
+      
+    
+       return output;
+       
+
+   
 }
-function getPostText(id,htmlid)
+function getPostText(id)
 {
     loadjscssfile("/binder/output/style.css", "css"); //dynamically load and add this .js file
     loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.css", "css");
     loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.js", "js");
-
+var post="";
     
-if(id==null||id<0||id=="")
-{
-    var url = new URL(window.location.href);
-     id = url.searchParams.get("post_id");
-}
-    $.get("/binder/output/binder.php?get=article&id="+id,function(data){ 
-       
+    if(id==null||id<0||id=="")
+    {
+        var url = new URL(window.location.href);
+        id = url.searchParams.get("post_id");
+    }
+    $.ajax({
+        url:"/binder/output/binder.php?get=article&id="+id,
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) {
+                
         data=decode(data);
-        
-        $("#"+htmlid).append(data);
-          
-        });
-}
-function getTitle(id,htmlid)
-{
+        post=data;
 
- $.get("/binder/output/binder.php?get=title&id="+id,function(data){ 
-        
-    data=decode(data);
-       
- 
-     $("#"+htmlid).append(data);     
-   
-    });
-   
-   
+            
+        }
+        });
+      
+    return post;
+}
+function getTitle(id)
+{
+var title="";
+    $.ajax({
+        url:"/binder/output/binder.php?get=title&id="+id,
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) {
+                
+        data=decode(data);
+        title=data;
+    
+            
+        }
+        });
+
+   return title;
          
 }
 
-function getLinkbyid(htmlid,post_page,id)//if url location is in the same page (/?...) leave void post page
+function getLinkbyid(htmlid,post_page,id)
 {
+    //if url location is in the same page (/?...) leave void post page
+    var titlelist;
 post_page="";
-    $.get("/binder/output/binder.php?get=postlist",function(data)
-    { 
-       
-       /*
+    $.ajax({
+        url:"/binder/output/binder.php?get=postlist",
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) {
+             /*
        to work with common variables we must nest requests in a once
        */ 
+      var json=JSON.parse(data);
+      data="";
+      var length=Object.keys(json).length;
+     
+      var titlelist=new Array(length);
+      for(var i=0;i<length;i++)
+      {
+      
+          titlelist[i]=json[i];    
+              
+      }
+      $.ajax({
+        url:"/binder/output/binder.php?get=id",
+        type: 'get',//type of request
+        dataType: 'html',//datatype of response
+        async: false,//asyncronus function, false otherwise the following will be execute without waiting the end of the request.
+        success: function(data) {
+    
             var json=JSON.parse(data);
             data="";
             var length=Object.keys(json).length;
-           
-            var titlelist=new Array(length);
+            //alert(length);
+            var idlist=new Array(length);
+          
+             var ok=false;//is boolean variable, it defines if id there is in the array
+             id_pos=0;
             for(var i=0;i<length;i++)
             {
-            
-                titlelist[i]=json[i];    
-                    
+                
+                idlist[i]=json[i];    
+                  if(idlist[i]==id)
+                  {
+                        ok=true;
+                        id_pos=i;
+                  }    
             }
-
-              $.get("/binder/output/binder.php?get=id",function(data){ 
-       
-        var json=JSON.parse(data);
-        data="";
-        var length=Object.keys(json).length;
-        //alert(length);
-        var idlist=new Array(length);
-      
-         var ok=false;//is boolean variable, it defines if id there is in the array
-         id_pos=0;
-        for(var i=0;i<length;i++)
-        {
             
-            idlist[i]=json[i];    
-              if(idlist[i]==id)
-              {
-                    ok=true;
-                    id_pos=i;
-              }    
+            
+               
+               if(ok)
+                {
+                    var out="<a id='art"+id_pos+"' href="+post_page+"?post_id="+idlist[id_pos]+">"+titlelist[id_pos]+"</a>";
+              
+                out=decode(out);
+                
+                 $("#"+htmlid).append(out);
+                } 
+           
+               
         }
-        
-        
-           
-           if(ok)
-            {
-                var out="<a id='art"+id_pos+"' href="+post_page+"?post_id="+idlist[id_pos]+">"+titlelist[id_pos]+"</a>";
-          
-            out=decode(out);
-            
-             $("#"+htmlid).append(out);
-            } 
-       
-           
-    
-      
-        });
-            
     });
+        }
+
+    });
+    
+    
 }
 function getIdFromURL()
 {
@@ -213,10 +310,7 @@ function getIdFromURL()
     return myurl;
    
 }
-/*
-*To use this array you must before call getLast_N_id it will create and load with your last posts id.
-then if you what print data use the other functions inside the code
-*/
+
 function getLast_N_id(n)
 {
     var last_post;
@@ -312,8 +406,9 @@ function Search(target)
 });
 return datas;
 }
+//------------------------------------------------------------------------------------------------------------------------
+//Internal functions
 //Add quill data
-
 function loadjscssfile(filename, filetype){
     if (filetype=="js"){ //if filename is a external JavaScript file
         var fileref=document.createElement('script')
@@ -339,4 +434,12 @@ function getDataFromURL() {
     myurl = url.searchParams.get("post_id"); //search get parameter in the url string
     return myurl;
 }
-
+function decode(x)
+{
+  /*
+  THIS FUNCTION MUST!!!! EXECUTE INSIDE THE JQUERY READY DOCUMENT FUNCTION 
+  */
+  
+  x=decodeURIComponent(x);
+ return x;
+}

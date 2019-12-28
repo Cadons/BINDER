@@ -90,7 +90,7 @@ if($credMail[4]==1)
     <form>
     </table>
     <br>
-    <h6>Binder Version:1.0</h6>
+    <h6>Binder Version:<?php $f=fopen("version.txt","r"); echo fread($f,32); fclose($f);?></h6>
 </div>
 
 
