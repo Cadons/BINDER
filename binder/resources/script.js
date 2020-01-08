@@ -80,7 +80,8 @@ swal ( "Error" ,  "Error during elaboration!" ,  "error" ); });
 $().ready(function(){
   $("#account").hide();
   $("#update_account").hide();
-  Account_List();
+
+  
 
 });
 
@@ -393,7 +394,7 @@ req.done(function (data)
 {	
  
   
-      if(data=="OK")
+      if(data=="OK"||data=="done")
   {
   swal ( "Good job!" ,  successtxt ,  "success" );
   }else

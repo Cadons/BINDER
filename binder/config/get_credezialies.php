@@ -28,6 +28,7 @@
         {
             return $this->json["database_access"]["host"];
         }
+        
     public function getUsername()
         {
            $get=array();

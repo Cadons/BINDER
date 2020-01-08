@@ -78,17 +78,16 @@ $report.="Articles table creation:ok <br>";
 else
 $report.="Articles table creation: failed<br>";
 //Publications
-$sql="CREATE TABLE $db_name.publications (id int(11) NOT NULL AUTO_INCREMENT,title varchar(255) COLLATE utf8_bin DEFAULT NULL,datepublish datetime DEFAULT NULL,content int(11) NOT NULL DEFAULT '0' COMMENT 'contiene l''indice dell''articolo per il testo',author varchar(255) COLLATE utf8_bin DEFAULT NULL,Preview varchar(255) COLLATE utf8_bin DEFAULT NULL,PRIMARY KEY (id,content)) ";
+$sql="CREATE TABLE $db_name.publications (id int(11) NOT NULL AUTO_INCREMENT,title varchar(255) COLLATE utf8_bin DEFAULT NULL,datepublish datetime DEFAULT NULL,content int(11) NOT NULL DEFAULT '0' COMMENT 'contiene l''indice dell''articolo per il testo',author varchar(255) COLLATE utf8_bin DEFAULT NULL,Preview varchar(255) COLLATE utf8_bin DEFAULT NULL,'idSection' varchar(255) COLLATE utf8_bin DEFAULT NULL,PRIMARY KEY (id,content)) ";
 if($con->query($sql))
 $report.="publications table creation:ok <br>";
 else
 $report.="publications table creation: failed<br>";
-//Tag
-$sql="CREATE TABLE $db_name.Tag (Name varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',PRIMARY KEY (Name)) ";
+$sql="CREATE TABLE $db_name.sections ('id' int(11) NOT NULL AUTO_INCREMENT,'name' varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',PRIMARY KEY ('id','name')) ";
 if($con->query($sql))
-$report.="Tag table creation:ok <br>";
+$report.="Section table creation:ok <br>";
 else
-$report.="Tag table creation: failed<br>";
+$report.="Section table creation: failed<br>";
 //TagReference
 $sql="CREATE TABLE $db_name.TagReference (ID int(11) NOT NULL AUTO_INCREMENT,TagName varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',IDPublication int(11) NOT NULL DEFAULT '0',PRIMARY KEY (ID,TagName,IDPublication)) ";
 if($con->query($sql))

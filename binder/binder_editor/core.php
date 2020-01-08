@@ -274,7 +274,19 @@ function check_Admin($conn,$id)
         {
             $name=$_POST['title'];
             $date=$_POST['date'];
-            $preview=$_POST['preview'];
+            if(isset($_POST['preview']))
+            {
+                if($_POST['preview']=="null"||$_POST['preview']=="undefined")
+                $preview="null";
+                else
+               $preview=$_POST['preview'];  
+            }else
+            {
+                if($_POST['preview']=="null"||$_POST['preview']=="undefined")
+                $preview="null";
+            }
+           
+            $section=$_POST['section'];
             $idcontent=$_POST['article_id'];
             $tag=$_POST['tags'];        //This string must be divided in an array using ,
             $tagArray=array();
@@ -291,7 +303,15 @@ function check_Admin($conn,$id)
                 //Update Datas
                 $id=$ris->fetch_assoc();
                 $id=$id["id"];
-                $sql="UPDATE publications SET title='$name', datepublish='$date', Preview='$preview' WHERE id=$id";
+                if($preview=="null")
+                {
+                    $sql="UPDATE publications SET title='$name', datepublish='$date', Preview=$preview,idSection=$section WHERE id=$id";
+
+                }else
+                {
+                   $sql="UPDATE publications SET title='$name', datepublish='$date', Preview='$preview',idSection=$section WHERE id=$id"; 
+                }
+                
                 $conn->query($sql);
 
                 $sql="SELECT * FROM TagReference WHERE IDPublication=$id";
@@ -374,8 +394,7 @@ function check_Admin($conn,$id)
                            
 
                          
-                                $sql="INSERT INTO Tag (Name) VALUES ('$e')";
-                                $conn->query($sql);  
+                              
                                 $sql="INSERT INTO TagReference (TagName, IDPublication) VALUES ('$e',$id)";
                                 $conn->query($sql); 
                             
@@ -389,7 +408,15 @@ function check_Admin($conn,$id)
             else
             {
                     /*Do publication process */
-                    $sql="INSERT INTO publications (title,datepublish,content,author,Preview) VALUES ('$name','$date','$idcontent','$author','$preview')";
+                    if($preview=="null")
+                    {
+                        $sql="INSERT INTO publications (title,datepublish,content,author,Preview,idSection) VALUES ('$name','$date','$idcontent','$author',$preview,$section)";
+
+                    }else
+                    {
+                        $sql="INSERT INTO publications (title,datepublish,content,author,Preview,idSection) VALUES ('$name','$date','$idcontent','$author','$preview',$section)";
+
+                    }
                     $conn->query($sql); 
                     //get publications id
                     $sql="SELECT * FROM publications WHERE title='$name' AND author='$author'";

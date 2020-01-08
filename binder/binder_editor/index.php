@@ -100,6 +100,11 @@
               <input type="date" id="Pdate" class="form-control" id="date"><br>
               <label>Tag</label><br>
               <input type="text" id="Ptags" class="form-control" id="tag" placeholder="Divide tags with ;"><br>
+              <label >Section</label><br>
+              <select  class="form-control" id="section">
+              <option selected value='null'>None</option>
+           
+              </select>
               <br>
               <input type='checkbox' class='form-input'  onclick='EnableImagePreview()' id="PreviewCheckBox">Image preview<br>
               <label id="PreviewLabel"></label><br>

@@ -127,7 +127,7 @@ class get_data
     }
     public static function Search($target)
     {
-        $sql="SELECT title FROM publications WHERE title like '%$target%' OR author like '%$target%' UNION SELECT TagName FROM TagReference WHERE TagName like '%$target%' ";
+        $sql="SELECT title FROM publications WHERE title like '%$target%' OR author like '%$target%' UNION SELECT TagName FROM TagReference WHERE TagName like '%$target%' UNION SELECT name FROM sections WHERE name like '%$target%' ";
         require_once("../config/get_credezialies.php");
     $json=array();
     $titles=array();
@@ -159,7 +159,7 @@ class get_data
                      $idString.=" OR id=".$row['IDPublication'];
                    }
                }
-
+            
                  $sql="SELECT * from publications WHERE title='$e' ".$idString;
                  $ris=$conn->query($sql);
                  if(mysqli_num_rows($ris)>0)

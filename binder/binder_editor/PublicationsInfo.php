@@ -137,7 +137,33 @@ else
                         }
                               
                         break;
-                }                 
+                }  
+                case "section":
+                    {
+                        if(isset($_GET["id"]))
+                            {
+                                $json;
+                                $target=$_GET["id"];
+                                $sql="SELECT * FROM publications WHERE content=$target";
+                                $ris=$conn->query($sql);
+                                    if(mysqli_num_rows($ris)>0)
+                                        {
+                                            while($row=$ris->fetch_assoc())
+                                                {
+                                                    $json=$row["idSection"];
+                                                }
+                                            
+                                                echo $json;
+                                        }
+                                        else
+                                            {
+                                                echo "not_found";
+                                            }
+                                        
+                            }
+                                  
+                            break;
+                    }               
             }
         }
     }

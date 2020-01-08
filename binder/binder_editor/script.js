@@ -11,8 +11,9 @@ $().ready(function ()
         $("#delbtn").prop('disabled', true);
         $("#upbtn").prop('disabled', true);
         $("#Preview").prop('disabled', true);
-
+        Section_List();
         getPublicationInfo();
+       
     });
 //Setup quill editor
 function SetUpQuill()
@@ -398,7 +399,22 @@ function Open(id,pub=false)
 
 }
 
+function Section_List()
+            {
+            $("#account_list").empty();
+            $.get("/binder/sectionMenager.php?action=get", (data)=>{
+                res=JSON.parse(data);
 
+                for(var i=0;i<res.length;i++)
+                {
+             
+                var out="<option value="+res[i][1]+">"+res[i][0]+"</option>";
+                $("#section").append(out);
+                }
+
+            });
+
+            }
 function Publish()
 {
 
@@ -412,6 +428,7 @@ function Publish()
       var date=$("#Pdate").val();
     
       var tags=$("#Ptags").val();
+      var cat=$("#section").val();
       url=new URLSearchParams(document.location.search);
       page=url.get('open');
       var content=page;//get html code inside the quill editor div
@@ -424,9 +441,13 @@ function Publish()
       data.append("tags",tags);
       data.append("req",'publish');
       data.append("title",title);
+      if(previewEnable)
       data.append("preview",PreviewImageName);
+      else
+      data.append("preview","null");
       data.append("date",date);
       data.append("article_id",content);
+      data.append("section",cat);
       sendpost(data,"/binder/binder_editor/core.php","Published","Not Published");
       Close();
      }else
@@ -457,6 +478,21 @@ function getPublicationInfo()
        $( "#Pdate" ).val(data); 
       }
       });
+      $.get("/binder/binder_editor/PublicationsInfo.php?req=section&id="+id, function( data ) {
+        if(data!="not_found")
+        {
+          data = data.split(' ')[0];
+       try {
+          $( "#section").find("option[value="+data+"]").attr('selected', 'selected');
+            $("#section").val(data);
+       } catch (error) {
+        $( "#section option:first").val(); 
+      
+       }
+         
+         
+        }
+        });
       $.get("/binder/binder_editor/PublicationsInfo.php?req=tags&id="+id, function( data ) {
         if(data!="not_found")
         {

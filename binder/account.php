@@ -50,7 +50,9 @@ include('resources/general_body.php');
             <div><br>
             
                 <table class="table table-bordered" id="account_list">
-
+<script>
+Account_List();
+</script>
                 </table>
 
    </div>

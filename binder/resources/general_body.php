@@ -68,7 +68,11 @@ function BodyStart()
                                             }
                                         }
                                         if(check_Admin_internal()==1)
-                                        {?>
+                                        {?> 
+                                            <li>
+                                    
+                                    <a href="/binder/categories.php"><p class="label-menu">Categories</p></a>
+                                  </li>
                                         <li>
                                     
                                           <a href="/binder/account.php"><p class="label-menu">Accounts Menager</p></a>
@@ -77,6 +81,7 @@ function BodyStart()
                                     
                                     <a href="/binder/Settings.php"><p class="label-menu">Settings</p></a>
                                   </li>
+                             
                                         <?php }
                                        
                                       ?>
@@ -112,6 +117,10 @@ function BodyStart()
                                  
                                         if(check_Admin_internal()==1)
                                         {?>
+                                           <li>
+                                    
+                                    <a href="/binder/categories.php"><p class="label-menu">Categories</p></a>
+                                  </li>
                                         <li>
                                     
                                           <a href="/binder/account.php"><p class="label-menu">Accounts Menager</p></a>
@@ -120,6 +129,7 @@ function BodyStart()
                                     
                                     <a href="/binder/Settings.php"><p class="label-menu">Settings</p></a>
                                   </li>
+                               
                                         <?php }
                                        
                                       ?>

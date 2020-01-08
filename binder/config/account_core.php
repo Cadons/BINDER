@@ -1,11 +1,16 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
     session_start();
     if(!isset($_SESSION['log']))
     {
         session_destroy();
         header("location: /binder");
     }
+    include("../isAdmin.php");
 require_once("get_credezialies.php");
+
 $obj=new getCredenziales();
 $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
 //echo $cred[1];
@@ -222,21 +227,5 @@ function check_Admin($conn,$id,$cred)
         echo "error";
     }
 }
-function check_Admin_internal($conn,$usr,$cred)
-{
-    $sql="SELECT user,id FROM ".$cred[3].".login WHERE user='$usr' AND admin=1";
-    $ris=$conn->query($sql);
 
-     $id;
-    if(mysqli_num_rows($ris)>0)
-    {
-     
-        return 1;
-    
-    }
-    else
-    {
-        return 0;
-    }
-}
 ?>
