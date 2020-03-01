@@ -19,8 +19,7 @@
 <link rel="shortcut icon" href="/binder/resources/favicon.ico" />
 <!-- jQuery library -->
 <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+<script src="/binder/resources/js/jquery.js"></script>
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 

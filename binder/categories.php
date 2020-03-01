@@ -12,7 +12,7 @@
 <html>
 <head>
         <title>Categories Menager</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="/binder/resources/js/jquery.js"></script>
         <meta name="viewport" content="width=device-width, user-scalable=no,
 initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
@@ -50,7 +50,7 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
             {
             $("#account_list").empty();
             $.get("/binder/sectionMenager.php?action=get", (data)=>{
-               if(data!="Nan")
+               if(data!="Nan"||data=="done")
                {
                          res=JSON.parse(data);
                

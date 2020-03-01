@@ -11,8 +11,7 @@
 <link rel="shortcut icon" href="/binder/resources/favicon.ico" />
 <!-- jQuery library -->
 <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+<script src="/binder/resources/js/jquery.js"></script>
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
@@ -56,12 +55,12 @@ if(isset($_SESSION['log']))
 		$userPassword = $_POST["psw"]; 
 		
 		$hashedUserPassword =hash ("sha256",$userPassword);//create hash for login
-	
 
-			if($db->Check_Admin_Credezialies($_POST["usr"],$hashedUserPassword))
+
+			if($db->Check_Credezialies($_POST["usr"],$hashedUserPassword))
 			{
-				$_SESSION['log']=$_POST["usr"];
-
+				$_SESSION['log']=$db->getUserID($_POST["usr"]);
+			
 				header("location: /binder/menager.php");
 			}
 			else

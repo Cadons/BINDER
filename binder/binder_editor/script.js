@@ -3,6 +3,7 @@ var previewEnable=false;
 var PreviewImageName;
 var preview=false;//if you want add an image to article it will be set false, if you want add preview of article it will be set true  
 var isuploaded=false;
+var imageId;
 $().ready(function ()
     {
         
@@ -155,7 +156,8 @@ function get_Images_List()
         if(n<5)
         {
           n++;
-          $("#images").append("<td><img src='/binder/img/"+element+"' class='imgBox' ><br><input type='checkbox' class='form-input' style='margin-left:50%' onclick='LoadSelectedImages(this.id)' id="+element+"></td>");//Output html
+          imgId=element[0];
+          $("#images").append("<td><img src='/binder/img/"+element[1]+"' class='imgBox' ><br><input type='checkbox' class='form-input' style='margin-left:50%' onclick='LoadSelectedImages(this.id)' id="+element[1]+" value="+imgId+"></td>");//Output html
 
         }
         else
@@ -297,6 +299,8 @@ function Add()
     }
    $("#PreviewLabel").empty(); 
    $("#PreviewLabel").append("Preview Image: "+PreviewImageName);
+   imageId=document.getElementById(Images[0]).value;
+   console.log(imageId);
     $("#ImagePanel").modal("hide");  
   }
 ////console.log(PreviewImageName);
@@ -432,7 +436,7 @@ function Publish()
       url=new URLSearchParams(document.location.search);
       page=url.get('open');
       var content=page;//get html code inside the quill editor div
-     if(date!=null&&title!=null&&content!=null&&date!=""&&title!=""&&content!="")
+     if(date!=null&&title!=null&&content!=null&&date!=""&&title!=""&&content!=""&&cat!="null"&&cat!=null&&cat!="")
      {
       data=new FormData();
             
@@ -442,12 +446,14 @@ function Publish()
       data.append("req",'publish');
       data.append("title",title);
       if(previewEnable)
-      data.append("preview",PreviewImageName);
+      data.append("preview",imageId);
       else
-      data.append("preview","null");
+      data.append("preview","1");
       data.append("date",date);
       data.append("article_id",content);
       data.append("section",cat);
+ 
+
       sendpost(data,"/binder/binder_editor/core.php","Published","Not Published");
       Close();
      }else
@@ -510,11 +516,15 @@ function getPublicationInfo()
         }
         });
         $.get("/binder/binder_editor/PublicationsInfo.php?req=preview&id="+id, function( data ) {
+          data=JSON.parse(data);
           if(data!="not_found")
           {
+
               if(data!=""&&data!=null)
               {
-                PreviewImageName=data;
+                imageId=data[0];
+                PreviewImageName=data[1];
+                
                $("#PreviewLabel").empty(); $("#PreviewLabel").append("Preview Image: "+PreviewImageName);
                 $("#PreviewCheckBox").prop("checked",true);
                 EnableImagePreview();

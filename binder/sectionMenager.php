@@ -14,7 +14,61 @@ error_reporting(E_ALL);*/
 $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
 //echo $cred[1];
 $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-
+if(isset($_GET["action"]))
+{
+    if($_GET["action"]=="get") 
+        {
+          
+             
+                $sql="SELECT * FROM ".$cred[3].".sections";
+               $ris= $conn->query($sql);
+                if(mysqli_num_rows($ris)>0)
+                {
+                    $data=array();
+                 
+                    while($row=$ris->fetch_assoc())
+                        {
+                            
+                          
+                            $data[]=[$row["Name"],$row["idSection"]];
+                            
+                        }
+                        echo json_encode($data);
+                        
+                   
+                }
+                else
+                {
+                    echo "Nan";
+                }
+                
+            }
+             
+      
+        if($_GET["action"]=="check") 
+        {
+          
+             if(isset($_GET["name"]))
+             {
+                 $name=$_GET["name"];
+                    $sql="SELECT * FROM ".$cred[3].".sections WHERE name='$name'";
+               $ris= $conn->query($sql);
+                if(mysqli_num_rows($ris)>0)
+                {
+                   echo "no";
+                   
+                }
+                else
+                {
+                    echo "ok";
+                }
+                
+             }
+             
+            }
+             die();
+}
+    
 if(check_Admin_internal($conn,$_SESSION['log'],$cred)==0)
 {
 header("Location:/binder");
@@ -31,7 +85,7 @@ if(isset($_POST["action"]))
                 if(isset($_POST["name"])&&isset($_POST["nameID"]))
                 {
                     $name=$_POST["name"];
-                    $sql="UPDATE ".$cred[3].".sections SET name='$name' WHERE id=".$_POST["nameID"];
+                    $sql="UPDATE ".$cred[3].".sections SET name='$name' WHERE idSection=".$_POST["nameID"];
                     if($conn->query($sql))
                     {
                         echo "done";
@@ -71,7 +125,7 @@ if(isset($_POST["action"]))
                
                         if($conn->query($sql))
                         {
-                              $sql="DELETE FROM ".$cred[3].".sections WHERE id=".$_POST["nameID"];
+                              $sql="DELETE FROM ".$cred[3].".sections WHERE idSection=".$_POST["nameID"];
                             if($conn->query($sql))
                             {
                             echo "done";
@@ -91,61 +145,7 @@ if(isset($_POST["action"]))
     }
   
 }
-if(isset($_GET["action"]))
-{
-    if($_GET["action"]=="get") 
-        {
-          
-             
-                $sql="SELECT * FROM ".$cred[3].".sections";
-               $ris= $conn->query($sql);
-                if(mysqli_num_rows($ris)>0)
-                {
-                    $data=array();
-                 
-                    while($row=$ris->fetch_assoc())
-                        {
-                            
-                          
-                            $data[]=[$row["name"],$row["id"]];
-                            
-                        }
-                        echo json_encode($data);
-                        
-                   
-                }
-                else
-                {
-                    echo "Nan";
-                }
-                
-            }
-             
-      
-        if($_GET["action"]=="check") 
-        {
-          
-             if(isset($_GET["name"]))
-             {
-                 $name=$_GET["name"];
-                    $sql="SELECT * FROM ".$cred[3].".sections WHERE name='$name'";
-               $ris= $conn->query($sql);
-                if(mysqli_num_rows($ris)>0)
-                {
-                   echo "no";
-                   
-                }
-                else
-                {
-                    echo "ok";
-                }
-                
-             }
-             
-            }
-             
-        }
-    }
+}
 
 
 

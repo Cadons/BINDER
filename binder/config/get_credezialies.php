@@ -49,6 +49,7 @@
             $get= $this->json;
             return $get["database_access"]['database_name'];
         }
+ 
         public function getHost()
         {
             $get=array();

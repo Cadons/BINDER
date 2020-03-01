@@ -103,7 +103,7 @@ function check_Usr()
   $.get("/binder/config/account_core.php?check&usr="+username, (data)=>{
     if(data=="false")
     {
-      swal ( "Error!" ,  "Username not aviable",  "error" );
+      swal ( "Error!" ,  "Username not available",  "error" );
      
     }
     else
@@ -221,6 +221,9 @@ function Delete_Account(usr)
           {
             swal ( "Good Job!" ,  "Account has bin removed",  "success" );
             Account_List();
+          }else if(data=="logout")
+          {
+            logout();
           }
           else
           {
@@ -356,8 +359,10 @@ function isAdmin(usr)
   $.get("/binder/config/account_core.php?isadmin&usr="+usr, (data)=>{
     if(data!='ok')
     {
-      location.href="/binder/";
      
+      $("#add").remove();
+      $("#permissionsu").remove();
+      $("#permissionsut").remove();
     }
     
   });
@@ -367,12 +372,15 @@ function isAdminList(usr)
 
 
   $.get("/binder/config/account_core.php?isadmin&usr="+usr, (data)=>{
-    if(data!='ok')
+    if(data!="ok")
     {
-      
       $("#account_menager").hide();
     }
-    
+    else
+    {
+      $("#account_menager").show();
+    }
+
   });
 }
 function sendpost(data,url,successtxt,error)
@@ -438,7 +446,7 @@ function Delete(id)
         if(ok)
         {
           $.get("/binder/binder_editor/core.php?req=delete&id="+id, function( data ) {
-          if(data!="not_found")
+          if(data!="not_found"||data!="error")
           {
               
           alert("Article deleted");
@@ -474,7 +482,7 @@ function Delete_pub(id)
     if(ok)
     {
       $.get("/binder/binder_editor/core.php?req=delete_pub&id="+id, function( data ) {
-      if(data!="not_found")
+    if(data!="not_found"||data!="error")
       {
          
       alert("Article deleted");
@@ -620,18 +628,21 @@ function PrintArticleList(articlesData='',n,pub=false)
     for(var i=0;i<n;i++)
       {
   
-        if(!pub)
+        if(pub==false)
         {   
           var isDelivered="";
            if(articlesData[i][3]==1)
            {
-              isDelivered="[published]"
+              isDelivered="[published]";
            }
                   myout='<tr><td><input type="checkbox" onclick="Select('+articlesData[i][0]+')" id='+articlesData[i][0]+' class="checkbox-inline"> <a href="#" onclick="Edit('+articlesData[i][0]+')" style="color:black;">'+articlesData[i][1]+isDelivered+'</a></td><td><b>'+articlesData[i][2]+'</b></a></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+articlesData[i][0]+'><i class="fas fa-trash"></i></button></td></tr>';       
 
         }
         else
-        myout='<tr><td><input type="checkbox" onclick="Select('+articlesData[i][0]+')" id='+articlesData[i][0]+' class="checkbox-inline"> <a href="#" onclick="Edit('+articlesData[i][3]+')" style="color:black;">'+articlesData[i][1]+'</a></td><td><b>'+articlesData[i][2]+'</b></a></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+articlesData[i][0]+'><i class="fas fa-trash"></i></button></td></tr>';       
+        {
+                  myout='<tr><td><input type="checkbox" onclick="Select('+articlesData[i][0]+')" id='+articlesData[i][0]+' class="checkbox-inline"> <a href="#" onclick="Edit('+articlesData[i][3]+')" style="color:black;">'+articlesData[i][1]+'</a></td><td><b>'+articlesData[i][2]+'</b></a></td><td><button class = "btn btn-default btn-lg" onclick="Delete(this.id)" id='+articlesData[i][0]+'><i class="fas fa-trash"></i></button></td></tr>';       
+
+        }
 
         $("#tab").append(myout);
       }

@@ -32,17 +32,22 @@ else
                             {
                             $row=$ris->fetch_assoc();
                                     
-                            $target=$row["id"];
+                            $target=$row["idPublication"];
                             
                                    
-                            $sql="SELECT * FROM TagReference WHERE IDPublication=$target";
+                            $sql="SELECT
+                            *
+                          FROM
+                            publications_has_tag
+                              INNER JOIN tag ON publications_has_tag.tag_idtag = tag.idTag
+                              where publications_has_tag.publications_idpublication=$target";
                             //echo $sql;
                             $ris=$conn->query($sql);
                             if(mysqli_num_rows($ris)>0)
                             {
                                 while($row=$ris->fetch_assoc())
                                 {
-                                    $json[]=$row["TagName"];
+                                    $json[]=$row["Name"];
                                 }
                                 $json=json_encode($json);
                                 echo $json;
@@ -97,7 +102,7 @@ else
                                 {
                                     while($row=$ris->fetch_assoc())
                                         {
-                                            $json=$row["datepublish"];
+                                            $json=$row["date"];
                                         }
                                        
                                         echo $json;
@@ -124,10 +129,19 @@ else
                                     {
                                         while($row=$ris->fetch_assoc())
                                             {
-                                                $json=$row["Preview"];
+                                                $json[0]=$row["preview"];
+                                                $sql="SELECT * FROM images WHERE idImage=".$row["preview"];
+
+                                                $ris=$conn->query($sql);
+                                                if(mysqli_num_rows($ris)>0)
+                                                    {
+                                                        $row=$ris->fetch_assoc();
+                                                        $json[1]=$row["name"];
+                                                        }
+                                         
                                             }
-                                        
-                                            echo $json;
+                                       echo json_encode($json);
+                                            
                                     }
                                     else
                                         {

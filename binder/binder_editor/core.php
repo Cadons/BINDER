@@ -1,4 +1,5 @@
 <?php
+//
 session_start();
 if(!isset($_SESSION['log']))
 {
@@ -45,7 +46,7 @@ $req=null;
                  
 function check_Admin($conn,$id)
 {
-    $sql="SELECT id,admin FROM login WHERE id=".$id."AND admin=1";//check if user is admin
+    $sql="SELECT idUser,isAdmin FROM users WHERE idUser=".$id."AND isAdmin=1";//check if user is admin
     $ris=$conn->query($sql);
     if(mysqli_num_rows($ris)>0||$ris!=null)
     {
@@ -75,7 +76,7 @@ function check_Admin($conn,$id)
            
            
             //check existant
-            $sql="SELECT * FROM articles WHERE id=".$id;
+            $sql="SELECT * FROM articles WHERE idArticle=".$id;
             $ris=$conn->query($sql);
            
             $content=$_POST['text'];
@@ -83,7 +84,7 @@ function check_Admin($conn,$id)
           //  echo $content;
             //  $content=urldecode($_SERVER['REQUEST_URI']);
             $name="";
-            $sql="SELECT * FROM articles WHERE id=".$id;
+            $sql="SELECT * FROM articles WHERE idArticle=".$id;
                     $ris=$conn->query($sql);
                     while($row=$ris->fetch_assoc())
                         {
@@ -94,7 +95,7 @@ function check_Admin($conn,$id)
                 {
                     //Update
                     $edit_date=getNowDateTime();
-                    $sql="UPDATE articles SET content='$content', last_edit='$edit_date' WHERE id=".$id;
+                    $sql="UPDATE articles SET content='$content', lastEdit='$edit_date' WHERE idArticle=".$id;
                     $conn->query($sql);
                 }
                 else
@@ -109,22 +110,16 @@ function check_Admin($conn,$id)
         {
             $id=$_GET['id'];
             //check existant
-            if($isadmin=="admin")
-            $sql="SELECT * FROM articles WHERE id=".$id;
-            else
-            $sql="SELECT * FROM articles WHERE id=".$id." AND author='$logusr'";
+        
+            $sql="SELECT * FROM articles WHERE idArticle=".$id." AND author=$logusr";
             $ris=$conn->query($sql);
           
             
             if(mysqli_num_rows($ris)>0)
                 {
                     //send datas
-                    if($isadmin=="admin")
-                    $sql="SELECT * FROM articles WHERE id=".$id;
-                    else
-                    $sql="SELECT * FROM articles WHERE id=".$id." AND author='$logusr'";
-
-                    $ris=$conn->query($sql);
+               
+                   
                     while($row=$ris->fetch_assoc())
                         {
                             echo $row['content'];
@@ -143,11 +138,8 @@ function check_Admin($conn,$id)
         {
             
     
-            //check existant
-            if($isadmin=="admin")
-            $sql="SELECT * FROM articles";
-            else
-            $sql="SELECT * FROM articles WHERE author='$logusr'";
+     
+            $sql="SELECT * FROM articles WHERE author=$logusr";
             $ris=$conn->query($sql);
             $data=array();
             $i=0;
@@ -166,11 +158,8 @@ function check_Admin($conn,$id)
             
             $id=$_GET['id'];
     
-            //check existant
-            if($isadmin=="admin")
-            $sql="SELECT * FROM articles WHERE id=$id";
-            else
-            $sql="SELECT * FROM articles WHERE id=$id AND author='$logusr'";
+           
+            $sql="SELECT * FROM articles WHERE idArticle=$id AND author=$logusr";
             $ris=$conn->query($sql);
             $data=array();
             $i=0;
@@ -190,11 +179,8 @@ function check_Admin($conn,$id)
             
             $id=$_GET['id'];
     
-            //check existant
-            if($isadmin=="admin")
-            $sql="SELECT * FROM articles WHERE id=".$id;
-            else
-            $sql="SELECT * FROM articles WHERE id=".$id." AND author='$logusr'";
+      
+            $sql="SELECT * FROM articles WHERE idArticle=".$id." AND author=$logusr";
 
             $ris=$conn->query($sql);
             $data=array();
@@ -216,11 +202,9 @@ function check_Admin($conn,$id)
             
             $id=$_GET['id'];
     
-            //check existant
-            if($isadmin=="admin")
-            $sql="SELECT * FROM publications WHERE id=$id";
-            else
-            $sql="SELECT * FROM publications WHERE id=$id AND author='$logusr'";
+      
+            $sql="SELECT * FROM publications WHERE idPublication=$id";
+     
             $ris=$conn->query($sql);
             $data=array();
             $i=0;
@@ -247,45 +231,35 @@ function check_Admin($conn,$id)
         {
             $id=$_GET['id'];
 
-            if($isadmin=="admin")
-            $sql="DELETE FROM articles WHERE id=".$id;
+          
+            $sql="DELETE FROM articles WHERE idArticle=".$id;
+            if($conn->query($sql))
+            echo "ok";
             else
-            $sql="DELETE FROM articles WHERE id=".$id." AND author='$logusr'";
-
-            $conn->query($sql);
-            echo "OK";
+            echo "error";
             break;
         }
         case "delete_pub":
         {
             $title=$_GET['id'];
-            if($isadmin=="admin")
-            $sql="DELETE FROM publications WHERE id=$title";
-            else
-            $sql="DELETE FROM publications WHERE id=$title AND author='$logusr'";
-            $conn->query($sql);
+     
+            $sql="DELETE FROM publications WHERE idPublication=$title";
+            
+            if($conn->query($sql))
+           echo "ok";
+           else
+           echo $conn->error;
             //remove Reference of tags
-            $sql="DELETE FROM TagReference WHERE IDPublication=$title";
+           /* $sql="DELETE FROM TagReference WHERE IDPublication=$title";
             $conn->query($sql);
-            echo "OK";
+            echo "OK";*/
             break;
         }
         case "publish":
         {
             $name=$_POST['title'];
             $date=$_POST['date'];
-            if(isset($_POST['preview']))
-            {
-                if($_POST['preview']=="null"||$_POST['preview']=="undefined")
-                $preview="null";
-                else
-               $preview=$_POST['preview'];  
-            }else
-            {
-                if($_POST['preview']=="null"||$_POST['preview']=="undefined")
-                $preview="null";
-            }
-           
+            $preview=$_POST['preview']; 
             $section=$_POST['section'];
             $idcontent=$_POST['article_id'];
             $tag=$_POST['tags'];        //This string must be divided in an array using ,
@@ -295,154 +269,106 @@ function check_Admin($conn,$id)
             $author=$_SESSION['log'];
             
             //check if there is an other article
+try{
+    $sql="SELECT idPublication,content FROM publications WHERE content=$idcontent";
+    $ris=$conn->query($sql);
+    if(mysqli_num_rows($ris)>0)
+    {
+        //Update Datas
+        $id=$ris->fetch_assoc();
+        $id=$id["idPublication"];
+           $sql="UPDATE publications SET title='$name', date='$date', Preview=$preview,idSection=$section WHERE idPublication=$id"; 
+           
+           
+        $conn->query($sql);
 
-            $sql="SELECT id,content FROM publications WHERE content=$idcontent";
-            $ris=$conn->query($sql);
-            if(mysqli_num_rows($ris)>0)
-            {
-                //Update Datas
-                $id=$ris->fetch_assoc();
-                $id=$id["id"];
-                if($preview=="null")
-                {
-                    $sql="UPDATE publications SET title='$name', datepublish='$date', Preview=$preview,idSection=$section WHERE id=$id";
 
-                }else
-                {
-                   $sql="UPDATE publications SET title='$name', datepublish='$date', Preview='$preview',idSection=$section WHERE id=$id"; 
-                }
-                
-                $conn->query($sql);
+        $sql="DELETE from publications_has_tag where publications_content=".$idcontent;
+        $ris=$conn->query($sql); 
+        foreach($tagArray as $e)
+        {
 
-                $sql="SELECT * FROM TagReference WHERE IDPublication=$id";
-                $ris=$conn->query($sql);
-                    /*
-                           *Search and Add new tag, if they are inside array and db do nothing else add or if inside array there is no tag and it is in the table remove it from db
-                           */
-                if(mysqli_num_rows($ris)>0)
-                {
-                    $db_tags=array();
-                    $binaryList=array();
-                    //Load db_tags array
-                       while($row=$ris->fetch_assoc())
-                        {
-                            $db_tags[]=$row["TagName"];
-                        }
-                        
-                    //Check if user tags and db tags coincide
-                            $founded=false;
-                             
-                    for($i=0;$i<count($db_tags);$i++)
-                    {   
-                      
-                  
-                            for($j=0;$j<count($tagArray);$j++)
-                            {
-                                    if($tagArray[$j]==$db_tags[$i])
-                                    {
-                                        $founded=true;
-                                    }
-                            }
-                            if($founded==true)
-                            $binaryList[$i]=1;
-                            else
-                            $binaryList[$i]=0;
-                            
-                            
-                            $founded=false;
-                    }
 
-                   $n=0;//counter
-                    foreach($binaryList as $tag)
-                    {
-                        if($tag==0)
-                        {
-                            $sql="DELETE FROM TagReference WHERE TagName='$db_tags[$n]' AND IDPublication=$id";
-                            $conn->query($sql); 
-                        }
-                        $n++;
-                    }
-
-                    //If tags aren't inside db insert them
-                    foreach($tagArray as $e)
-                       {
-                       
-                           
-                                  $sql="SELECT * FROM TagReference WHERE TagName='$e' AND IDPublication=$id";
-                                  $ris=$conn->query($sql);
-
-                                  if(mysqli_num_rows($ris)==0)
-                                  {
-
-                                          $sql="INSERT INTO Tag (Name) VALUES ('$e')";
-                                          $conn->query($sql);  
-                                          $sql="INSERT INTO TagReference (TagName, IDPublication) VALUES ('$e',$id)";
-                                          $conn->query($sql); 
-                                  }
-                   
-                       }
-                
-                
-                
-                }
-                else
-                {
+        
+              
+          
+         $sql="SELECT name FROM tag where name='$e'";
+         $ris=$conn->query($sql);
+         if(mysqli_num_rows($ris)==0)
+         {
+               if($e!="")
+         {
+                $sql="INSERT INTO tag (Name) VALUES ('$e')";
+                    $conn->query($sql);  
+         }   
+         }
   
-                       foreach($tagArray as $e)
-                       {
-                       
-                           
+         //** */
+         //add new tag or edit
+       
+         $sql="SELECT * from tag where Name='$e' ";
+         $ris=$conn->query($sql);  
+    
+         $row=$ris->fetch_assoc();
+         $sql="INSERT INTO publications_has_tag (publications_idpublication,publications_content,Tag_idTag)  VALUES ($id,$idcontent,".$row['idTag'].")";
+         $conn->query($sql); 
+       
+   
+       
+    
+        }
+        
+    }else{
 
-                         
-                              
-                                $sql="INSERT INTO TagReference (TagName, IDPublication) VALUES ('$e',$id)";
-                                $conn->query($sql); 
-                            
-                   
-                       }
-                }
-                     
-                   echo "OK";
-                    
-            }
-            else
+            /*Do publication process */
+        
+                $sql="INSERT INTO publications (date,content,Preview,idSection,title) VALUES ('$date',$idcontent,$preview,$section,'$name')";
+      
+            $conn->query($sql); 
+            foreach($tagArray as $e)
             {
-                    /*Do publication process */
-                    if($preview=="null")
-                    {
-                        $sql="INSERT INTO publications (title,datepublish,content,author,Preview,idSection) VALUES ('$name','$date','$idcontent','$author',$preview,$section)";
+            
+              
 
-                    }else
-                    {
-                        $sql="INSERT INTO publications (title,datepublish,content,author,Preview,idSection) VALUES ('$name','$date','$idcontent','$author','$preview',$section)";
-
-                    }
-                    $conn->query($sql); 
-                    //get publications id
-                    $sql="SELECT * FROM publications WHERE title='$name' AND author='$author'";
-                    $ris=$conn->query($sql);
-                
-                if(mysqli_num_rows($ris)>0)
-                    {
-                        $row=$ris->fetch_assoc();
-                        $id=$row["id"];
-                        
-                        /*Do tag loading*/
-                    foreach($tagArray as $e)
-                        {
-                        $sql="INSERT INTO Tag (Name) VALUES ('$e')";
-                        $conn->query($sql);  
-                        $sql="INSERT INTO TagReference (TagName, IDPublication) VALUES ('$e',$id)";
-                        $conn->query($sql); 
-                        }
-                    echo "OK";
-                    } 
-                    else
-                    {
-                        echo "ERROR";
-                    }
+        
+                $sql="SELECT name FROM tag where name='$e'";
+                $ris=$conn->query($sql);
+                if(mysqli_num_rows($ris)==0)
+                {
+                      if($e!="")
+                {
+                       $sql="INSERT INTO tag (Name) VALUES ('$e')";
+                           $conn->query($sql);  
+                }   
+                }
+         
+                //** */
+                //add new tag or edit
+              
+                $sql="SELECT * from tag where Name='$e' ";
+                $ris=$conn->query($sql);  
+           
+                $row=$ris->fetch_assoc();
+                $sql="INSERT INTO publications_has_tag (publications_idpublication,publications_content,Tag_idTag)  VALUES ($id,$idcontent,".$row['idTag'].")";
+                $conn->query($sql); 
+              
+          
+              
+       
+                 
+        
             }
             
+           
+                   
+            
+    }
+    
+       echo "OK"; 
+}catch (Excption $e)
+{
+    echo "Error"; 
+}
             
      
             break;
@@ -459,14 +385,18 @@ function check_Admin($conn,$id)
        }
        case "getImages"://get names of images
        {
-           $sql="SELECT name FROM images";
+           $sql="SELECT * FROM images";
            $ris=$conn->query($sql);
            $photos_names=array();
            if(mysqli_num_rows($ris)>0)
            {
+               $i=0;
                while($row=$ris->fetch_assoc())
            {
-                $photos_names[]=$row['name'];
+                $photos_names[$i]=array();
+                $photos_names[$i][0]=$row["idimage"];
+                $photos_names[$i][1]=$row['name'];
+                $i++;
            }
            $json=json_encode($photos_names);
            echo $json;
@@ -506,9 +436,9 @@ function check_Admin($conn,$id)
 
         
             if($isadmin=="admin")
-            $sql="SELECT * FROM $table WHERE title like '%$target%'";
+            $sql="SELECT * FROM $table WHERE name like '%$target%'";
             else
-            $sql="SELECT * FROM $table WHERE title like '$target%' AND author='$logusr'";
+            $sql="SELECT * FROM $table WHERE name like '$target%' AND author='$logusr'";
     
       /**
        * This snippet needs to retrive datas during research phase.
@@ -522,26 +452,43 @@ function check_Admin($conn,$id)
                             }
                             else
                             {
+                                /*ini_set('display_errors', 1);
+                                ini_set('display_startup_errors', 1);
+                                error_reporting(E_ALL);*/
 
-                                $_sql="SELECT * FROM TagReference WHERE TagName like '%$target%'";//check if there are articles with tags similar $target
+                                $_sql="SELECT * FROM tag WHERE Name like '%$target%'";//check if there are articles with tags similar $target
                                 $ris=$conn->query($_sql);
                                if(mysqli_num_rows($ris)>0)//if there are print else check title 
                                 {
                                     //Create a string with conditions of sql query
                                     $condition="";
+                                    $tagConditionid="Tag_idTag in(";
                                     while($row=$ris->fetch_assoc())
                                     {
-                                        $condition.=" id=".$row['IDPublication']." OR";//add condition element and value of publication's id 
+                                        $tagList.=$row["idTag"].",";
                                     }
-                                    
-                                     $_sql="SELECT * FROM publications WHERE ".$condition."  title like '%".$target."%'";//Find Datas with id of tags and target title
+                                    $tagList.="0";
+                                    $tagConditionid.=$tagList.")";
+                                    $_sql="SELECT * FROM publications_has_tag WHERE ".$tagConditionid;//check if there are articles with tags similar $target
+                                   // echo $_sql;
+                                    if($ris=$conn->query($_sql))
+                                    {
+                                              while($row=$ris->fetch_assoc())
+                                    {
+                                        
+                                        $condition.=" idpublication=".$row['publications_idpublication']." OR";//add condition element and value of publication's id 
 
-                                    GetData($_sql,false);//execute and print result
+                                    }
+                                     $_sql="SELECT * FROM publications WHERE ".$condition."  (title like '%".$target."%')";//Find Datas with id of tags and target title
+
+                                    GetData($_sql,false);//execute and print result 
+                                    }
+                             
                                  }else
                                  {
                                       GetData($sql,false);
                                  }
-                               
+                               //echo $conn->error;
                             } 
                             
                             
@@ -553,20 +500,29 @@ function check_Admin($conn,$id)
          
         if(!isset($_GET['published']))
             {
-                if($isadmin=="admin")
-                $sql="SELECT * FROM articles";
-                else
-                $sql="SELECT * FROM articles WHERE author='$logusr'";
+              
+                $sql="SELECT * FROM articles WHERE author=$logusr";
                
                 GetData($sql);
             }
             else
             {
-                if($isadmin=="admin")
-                $sql="SELECT * FROM publications";
-                else
-                $sql="SELECT * FROM publications WHERE author='$logusr'";
+               
+                $sql="SELECT
+                publications.idPublication,
+                publications.date,
+                publications.content,
+                publications.preview,
+                publications.title,
+                articles.author,
+                articles.idArticle
+              FROM
+                publications
+                  INNER JOIN articles ON (publications.content = articles.idArticle)
+              WHERE
+                author =$logusr";
                 GetData($sql,false); 
+             
             }
             break;
       
@@ -587,7 +543,19 @@ function check_Admin($conn,$id)
                          if($isadmin=="admin")
                          $sql="SELECT * FROM publications";
                          else
-                         $sql="SELECT * FROM publications WHERE author='$logusr'";
+                         $sql="SELECT
+                         publications.idPublication,
+                         publications.date,
+                         publications.content,
+                         publications.preview,
+                         publications.title,
+                         articles.author,
+                         articles.idArticle
+                       FROM
+                         publications
+                           INNER JOIN articles ON (publications.content = articles.idArticle)
+                       WHERE
+                         author =$logusr";
                          GetData($sql,false,true); 
                      }                 
                     break;
@@ -602,7 +570,7 @@ function check_Admin($conn,$id)
     {
         $logusr=$_SESSION["log"];
         $edit_date= getNowDateTime();
-        $sql="INSERT INTO articles (title,last_edit,content,author) VALUES ('$name','$edit_date','$content','$logusr')";
+        $sql="INSERT INTO articles (name,lastEdit,content,author) VALUES ('$name','$edit_date','$content','$logusr')";
         $conn->query($sql);
     }
     function getNowDateTime()
@@ -640,7 +608,8 @@ function GetData($sql="",$articles=true,$number=false)
                 $page_number=$page_number.'0';
                 
                 $cont=0;
-                while($row=$ris->fetch_assoc())
+                if(mysqli_num_rows($ris)>0)
+             {   while($row=$ris->fetch_assoc())
                                     {
 
                                         if($cont<=(int)$page_number&&$cont>=(int)$page_number-10)
@@ -651,7 +620,7 @@ function GetData($sql="",$articles=true,$number=false)
 
                                             //if articles has been published, its name will be signed to informed user to this
                                             //if isDelivered is 1 the article has been delivered else it is a proof 
-                                            $_sql="SELECT * FROM publications WHERE content=".$row['id'];
+                                            $_sql="SELECT * FROM publications WHERE content=".$row['idArticle'];
                                             $_ris=$conn->query($_sql);
                                             $isDelivered=0;
                                             if(mysqli_num_rows($_ris)>0)
@@ -659,17 +628,17 @@ function GetData($sql="",$articles=true,$number=false)
                                                 $isDelivered=1;
                                             }
                                             
-                                            $datas[$i][0]=$row['id'];
-                                            $datas[$i][1]=$row["title"];
-                                            $datas[$i][2]=$row["last_edit"];
+                                            $datas[$i][0]=$row['idArticle'];
+                                            $datas[$i][1]=$row["name"];
+                                            $datas[$i][2]=$row["lastEdit"];
                                             $datas[$i][3]=$isDelivered;
                                         }
                                         else
                                         {
                                             
-                                            $datas[$i][0]=$row['id'];
+                                            $datas[$i][0]=$row['idPublication'];
                                             $datas[$i][1]=$row["title"];
-                                            $datas[$i][2]=$row["datepublish"];
+                                            $datas[$i][2]=$row["date"];
                                             $datas[$i][3]=$row["content"];
                                         
                                         }
@@ -680,7 +649,7 @@ function GetData($sql="",$articles=true,$number=false)
                                     }
                 //JSON encoding
             $json=json_encode($datas);
-            echo $json;
+            echo $json;}
     }
     
 }

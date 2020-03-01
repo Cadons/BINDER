@@ -59,7 +59,7 @@ hr{
 }
 /*Responsive roles*/
 /*Enable mobile controls when sceen is smaller than 1124 px*/
-@media screen and (max-width:1124px)
+@media screen and (max-width:2389px)
 {
     /*Disable Desktop Controls*/
     .left-bar
@@ -82,7 +82,7 @@ hr{
 }
 
 /*Disable mobile controls when sceen is bigger than 1124 px*/
-@media screen and (min-width:1124px)
+@media screen and (min-width:2389px)
 {
 
     #hamburger 

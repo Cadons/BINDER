@@ -1,7 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
     session_start();
     if(!isset($_SESSION['log']))
     {
@@ -17,10 +15,7 @@ $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDat
 
 $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
 
-if(check_Admin_internal($conn,$_SESSION['log'],$cred)==0)
-{
-header("Location:/binder");
-}
+
 $report="";
 if(isset($_POST["add"]))
 {
@@ -32,7 +27,7 @@ $password = $psw;
 
 $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
-    $sql="INSERT INTO ".$cred[3].".login (user, psw,email) VALUES ('$usr', '$hashedPassword','$email')";
+    $sql="INSERT INTO ".$cred[3].".users (username, password,email) VALUES ('$usr', '$hashedPassword','$email')";
    
     if($conn->query($sql))
          $report.="User registration: ok\n";
@@ -42,7 +37,7 @@ $hashedPassword = hash ("sha256",$password);//create hash for database first par
         $privileges=$_POST["class"];
         if($privileges=="admin")
         {
-            $sql="SELECT user,id FROM ".$cred[3].".login WHERE user='$usr'";
+            $sql="SELECT username,idUser FROM ".$cred[3].".users WHERE username='$usr'";
             $ris=$conn->query($sql);
             if(mysqli_num_rows($ris)>0)
             {
@@ -51,9 +46,9 @@ $hashedPassword = hash ("sha256",$password);//create hash for database first par
                      {
                          
                          $id=$row['id'];
-                  
+                
                      }
-                     $sql="UPDATE ".$cred[3].".login SET admin=1 WHERE id=$id";
+                     $sql="UPDATE ".$cred[3].".users SET isAdmin=1 WHERE id=$id";
                      $conn->query($sql);
                     
             }
@@ -61,14 +56,20 @@ $hashedPassword = hash ("sha256",$password);//create hash for database first par
 }
 else if(isset($_GET["list"]))
 {
-    $sql="SELECT * FROM ".$cred[3].".login";
+
+    if(check_Admin_internal($conn,$_SESSION['log'],$cred)==1)
+    $sql="SELECT * FROM ".$cred[3].".users";
+    else
+    $sql="SELECT * FROM ".$cred[3].".users WHERE idUser=".$_SESSION['log'];
+     
     $ris=$conn->query($sql);
     $data=array();
     $i=0;
     while($row=$ris->fetch_assoc())
                      {
                          
-                         $data[$i]=$row['user'];
+                         $data[$i]=$row['username'];
+                         
                        $i++;
                      }
                      $json=json_encode($data);
@@ -77,7 +78,7 @@ else if(isset($_GET["list"]))
 else if(isset($_GET["check"]))
 {
     $usr=$_GET['usr'];
-    $sql="SELECT * FROM ".$cred[3].".login WHERE lower(user)='$usr' OR upper(user)='$usr'";
+    $sql="SELECT * FROM ".$cred[3].".users WHERE lower(username)='$usr' OR upper(username)='$usr'";
     $ris=$conn->query($sql);
     if(mysqli_num_rows($ris)>0)
     {
@@ -90,26 +91,25 @@ else if(isset($_GET["check"]))
 }
 else if(isset($_GET["del"]))
 {
+    
     $usr=$_GET['usr'];
-    $sql="SELECT * FROM ".$cred[3].".login WHERE user='$usr'";
+    $sql="SELECT * FROM ".$cred[3].".users WHERE username='$usr'";
     $ris=$conn->query($sql);
     $id;
     if(mysqli_num_rows($ris)>0)//get id of user
     {
         while($row=$ris->fetch_assoc())
-            $id=$row['id'];
+            $id=$row['idUser'];
     }
-    $sql="SELECT * FROM ".$cred[3].".login WHERE id=$id";//check if user is admin
-    $ris=$conn->query($sql);
-    if(mysqli_num_rows($ris)>0)
-    {
-         $sql="UPDATE ".$cred[3].".login SET admin=1 WHERE id=$id";//if it is admin delete from admin table
-         $conn->query($sql);
-    }
-       
-    $sql="DELETE FROM ".$cred[3].".login WHERE user='$usr'";//remove user from ".$cred[3].".login
+    $sql="DELETE FROM ".$cred[3].".users WHERE idUser='$id'";//remove user from ".$cred[3].".users
     if($conn->query($sql))
+    {
+        if(check_Admin_internal($conn,$_SESSION['log'],$cred)==0)
+        echo "logout";
+        else
         echo "ok";
+    }
+        
     else
         echo "error";
 
@@ -125,7 +125,7 @@ else if(isset($_POST["update"]))
 
     if(isset($psw))
     {
-       $sql="UPDATE ".$cred[3].".".$cred[3].".login SET psw='$hashedPassword' where user='$usr'";
+       $sql="UPDATE ".$cred[3].".".$cred[3].".users SET password='$hashedPassword' where username='$usr'";
    
     if($conn->query($sql))
          $report.="User update: ok\n";
@@ -135,7 +135,7 @@ else if(isset($_POST["update"]))
     }
     if(isset($email))
     {
-       $sql="UPDATE ".$cred[3].".login SET email='$email' where user='$usr'";
+       $sql="UPDATE ".$cred[3].".users SET email='$email' where username='$usr'";
    
     if($conn->query($sql))
          $report.="User update: ok\n";
@@ -145,7 +145,7 @@ else if(isset($_POST["update"]))
     }
     
         $privileges=$_POST["class"];
-          $sql="SELECT user,id FROM ".$cred[3].".login WHERE user='$usr'";
+          $sql="SELECT username,idUser FROM ".$cred[3].".users WHERE username='$usr'";
             $ris=$conn->query($sql);
        
           
@@ -155,49 +155,36 @@ else if(isset($_POST["update"]))
                 while($row=$ris->fetch_assoc())
                      {
                          
-                         $id=$row['id'];
+                         $id=$row['idUser'];
                   
                      }
                      if($privileges=='writer')
                      {
-                        $sql="UPDATE ".$cred[3].".login SET admin=0 WHERE id=$id";//if it is admin delete from admin table
+                        $sql="UPDATE ".$cred[3].".users SET isAdmin=0 WHERE idUser=$id";//if it is admin delete from admin table
                         $conn->query($sql);
                      }
                      else
                       {
-                        $sql="UPDATE ".$cred[3].".login SET admin=1 WHERE id=$id";
+                        $sql="UPDATE ".$cred[3].".users SET isAdmin=1 WHERE idUser=$id";
                         $conn->query($sql);
                       }
+                      echo $sql;
                      
         }
-        echo "ok".$report;
+        echo "ok";
 }
 else if(isset($_GET["isadmin"]))
 
 {
-    $usr=$_GET["usr"];
-    $sql="SELECT user,id FROM ".$cred[3].".login WHERE user='$usr'";
-    $ris=$conn->query($sql);
-
-     $id;
-    if(mysqli_num_rows($ris)>0)
-    {
-     
-        while($row=$ris->fetch_assoc())
-             {
-                 
-                 $id=$row['id'];
-          
-             }
-             check_Admin($conn,$id,$cred);
-
-            }
+    $id=$_GET["usr"];
+        check_Admin($conn,$id,$cred);
+ 
 }
 else if(isset($_GET["get_email"]))
 
 {
     $usr=$_GET["usr"];
-    $sql="SELECT user,email FROM ".$cred[3].".login WHERE user='$usr'";
+    $sql="SELECT username,email FROM ".$cred[3].".users WHERE username='$usr'";
     $ris=$conn->query($sql);
 
      $id;
@@ -216,16 +203,23 @@ else if(isset($_GET["get_email"]))
 //echo $report;                  
 function check_Admin($conn,$id,$cred)
 {
-    $sql="SELECT * FROM ".$cred[3].".login WHERE id=$id AND admin=1";//check if user is admin
-    $ris=$conn->query($sql);
-    if(mysqli_num_rows($ris)>0)
+    $sql="SELECT * FROM ".$cred[3].".users WHERE (username='$id' or idUser='$id') AND isAdmin=1";//check if user is admin
+
+    if($ris=$conn->query($sql))
+    {
+           if(mysqli_num_rows($ris)>0)
     {
          echo "ok";
     }
     else
     {
         echo "error";
+    } 
+    }else
+    {
+        echo "error";
     }
+
 }
 
 ?>

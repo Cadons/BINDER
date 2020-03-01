@@ -54,18 +54,16 @@ function BodyStart()
                                           $obj=new getCredenziales();
                                           $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
                                           $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-                                            $sql="SELECT user,id FROM ".$cred[3].".login WHERE user='".$_SESSION['log']."' AND admin=1";
-                                            $ris=$conn->query($sql);
-                                            if(mysqli_num_rows($ris)>0)
-                                            {
-                                             
-                                                return 1;
-                                            
-                                            }
-                                            else
-                                            {
-                                                return 0;
-                                            }
+                                          $sql="SELECT idUser FROM ".$cred[3].".users WHERE idUser=".$_SESSION["log"]." AND isAdmin=1";//check if user is admin
+                                          $ris=$conn->query($sql);
+                                          if(mysqli_num_rows($ris)>0)
+                                          {
+                                               return 1;
+                                          }
+                                          else
+                                          {
+                                             return 0;
+                                          }
                                         }
                                         if(check_Admin_internal()==1)
                                         {?> 
@@ -83,7 +81,15 @@ function BodyStart()
                                   </li>
                              
                                         <?php }
-                                       
+                                       else
+                                       {
+                                         ?>
+                                               <li>
+                                    
+                                    <a href="/binder/account.php"><p class="label-menu">Account Menager</p></a>
+                                  </li>
+                              <?php
+                                       }
                                       ?>
                                       <li>
                                       <a href="#" onclick="logout()"><p class="label-menu">Logout <i class="fas fa-sign-out-alt"></i> </p></a>
@@ -115,24 +121,32 @@ function BodyStart()
          <?php
                               
                                  
-                                        if(check_Admin_internal()==1)
-                                        {?>
-                                           <li>
-                                    
-                                    <a href="/binder/categories.php"><p class="label-menu">Categories</p></a>
-                                  </li>
-                                        <li>
-                                    
-                                          <a href="/binder/account.php"><p class="label-menu">Accounts Menager</p></a>
-                                        </li>
-                                        <li>
-                                    
-                                    <a href="/binder/Settings.php"><p class="label-menu">Settings</p></a>
-                                  </li>
-                               
-                                        <?php }
-                                       
-                                      ?>
+                              if(check_Admin_internal()==1)
+                              {?> 
+                                  <li>
+                          
+                          <a href="/binder/categories.php"><p class="label-menu">Categories</p></a>
+                        </li>
+                              <li>
+                          
+                                <a href="/binder/account.php"><p class="label-menu">Accounts Menager</p></a>
+                              </li>
+                              <li>
+                          
+                          <a href="/binder/Settings.php"><p class="label-menu">Settings</p></a>
+                        </li>
+                   
+                              <?php }
+                             else
+                             {
+                               ?>
+                                     <li>
+                          
+                          <a href="/binder/account.php"><p class="label-menu">Account Menager</p></a>
+                        </li>
+                    <?php
+                             }
+                            ?>
          <li>
          <a href="#" onclick="logout()"><p class="label-menu">Logout <i class="fas fa-sign-out-alt"></i> </p></a>
          </li>

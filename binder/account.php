@@ -12,7 +12,7 @@
 <html>
 <head>
         <title>Accounts Menager</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="/binder/resources/js/jquery.js"></script>
         <meta name="viewport" content="width=device-width, user-scalable=no,
 initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <script src='https://unpkg.com/sweetalert/dist/sweetalert.min.js'></script>
@@ -41,9 +41,9 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <?php 
 include('resources/general_body.php');
  BodyStart();?>
-<h4>Accounts Menager</h4>
+<h4>Account Menager</h4>
 <hr>
-              <button class = "btn btn-default btn-lg" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/add.png" width="50%"></button> 
+              <button class = "btn btn-default btn-lg" id="add" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/add.png" width="50%"></button> 
               <button class = "btn btn-default btn-lg" type="button" onclick="Account_List()"><img src="/binder/resources/template/icons/update.png" width="50%"></button> 
            
             
@@ -72,7 +72,7 @@ Account_List();
               <input type="password" id="pswu" class="form-control"><br>
               <label>confirm new password</label><br>
               <input type="password" id="pswconfu" class="form-control"><br>
-              <label>Select permission of account</label>
+              <label id="permissionsut">Select permission of account</label>
               <select class="form-control" id="permissionsu" onchange="permission_set()">
                   <option value="writer" id="w" >Writer</option>
                   <option value="admin" id="a">Admin</option>

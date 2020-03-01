@@ -26,8 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.css" integrity="sha256-uT5rNa8r/qorzlARiO7fTBE7EWQiX/umLlXsq7zyQP8=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.2/katex.min.js" integrity="sha256-TxnaXkPUeemXTVhlS5tDIVg42AvnNAotNaQjjYKK9bc=" crossorigin="anonymous"></script>
     <link rel="shortcut icon" href="/binder/resources/favicon.ico" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css" integrity="sha256-Z0FmvP1JtDmwVaHpsgu75FrC/SInDnlFWL95M65PCr4=" crossorigin="anonymous" />
+    <script src="/binder/resources/js/jquery.js"></script>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css" integrity="sha256-Z0FmvP1JtDmwVaHpsgu75FrC/SInDnlFWL95M65PCr4=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js" integrity="sha256-dxKVPdWCaZTdphHQqQEc0GSDAVZJCxshwn3ZrvHtqgo=" crossorigin="anonymous"></script>
     <script src="mathquill4quill.js"></script>
 
@@ -73,7 +72,6 @@
      <!--Put here section's contents-->
      <button type="button" class="btn btn-outline-secondary" onclick="Save('<?php echo $_GET['open'];?>',<?php if(isset($_GET['published']))echo true; else echo false;?>)">Save</button>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Publish">Publish...</button>
-   <button type="button" class="btn btn-outline-secondary" onclick="Delete('<?php echo $_GET['open'];?>')"><span><i class="fas fa-trash"></i></span></button>
    
    
    <br>

@@ -27,7 +27,7 @@ namespace DatabaseMenager
 			/*
 			This method check user login inside the menager page 
 			*/
-			public function Check_Admin_Credezialies($user,$psw)
+			public function Check_Credezialies($user,$psw)
 			{
 				
 			
@@ -36,7 +36,7 @@ namespace DatabaseMenager
 					$psw = addslashes ($psw);
 				  }	
 				
-				$sql="select user,psw from login where user='$user' and psw='$psw'";
+				$sql="select username,password from users where username='$user' and password='$psw'";
 				$ris=$this->connection->query($sql);
 				  
 				if(mysqli_num_rows($ris)>0)
@@ -49,7 +49,22 @@ namespace DatabaseMenager
 					return false;
 				}
 			}
-			
+			public function getUserID($username)
+			{
+				$sql="SELECT idUser from users where username='$username'";
+				$ris=$this->connection->query($sql);
+				if(mysqli_num_rows($ris)>0)
+				{
+					$row=$ris->fetch_assoc();
+
+					$id=$row["idUser"];	
+					return $id;
+				}
+				else
+				{
+					return -1;
+				}
+			}
 
 	
 

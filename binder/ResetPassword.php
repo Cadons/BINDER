@@ -39,7 +39,7 @@ if(isset($_POST["email"])&&isset($_POST["check"]))
       
  function checkEmail($_email,$conn,$dbName)
  {
-    $_sql="SELECT email FROM ".$dbName.".login where email='$_email'";
+    $_sql="SELECT email FROM ".$dbName.".users where email='$_email'";
     
     $_ris=$conn->query($_sql);
     if(mysqli_num_rows($_ris)>0)
@@ -63,7 +63,7 @@ function SendEmail($conn,$emailSettings,$urlCode,$dbName)
             if($emailSettings[4]=="0")
             {
             
-                $sql="UPDATE $dbName.login SET RecoveryCode='$urlCode' WHERE email='$user_email'";
+                $sql="UPDATE $dbName.users SET recovery='$urlCode' WHERE email='$user_email'";
             
                 $conn->query($sql);
                 $v=SMTP_email($user_email,$my_msg,$emailSettings[0],$emailSettings[1],$emailSettings[2],$emailSettings[3],"Reset Passowrd");
@@ -90,7 +90,7 @@ function ChangePassword($conn,$code,$password,$dbName)
 {
     $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
-    $sql="UPDATE ".$dbName.".login SET psw='$hashedPassword', RecoveryCode=null where RecoveryCode='$code'";
+    $sql="UPDATE ".$dbName.".users SET password='$hashedPassword', recovery=null where recovery='$code'";
     if($conn->query($sql))
     {
         echo "done";
