@@ -142,7 +142,7 @@ function UpdateSection()
 <?php 
 include('resources/general_body.php');
  BodyStart();?>
-<h4>Categories Menager</h4>
+<h4>Accounts Menager</h4>
 <hr>
               <button class = "btn btn-default btn-lg" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/sectionAdd.png" width="50%"></button>            
             

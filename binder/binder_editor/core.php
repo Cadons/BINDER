@@ -375,9 +375,7 @@ try{
         }
        case"logout": 
        {
-        $log=fopen("../log/access_log.txt","a");
-        fwrite($log,$_SESSION['user']." has disconnected at ".date("Y-m-d h:i:s a")."\n");
-        fclose($log);
+       
         
         session_unset();
         session_destroy();
