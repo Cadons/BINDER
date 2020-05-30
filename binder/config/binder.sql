@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `binder`.`user` (
   `isAdmin` INT(11) NULL DEFAULT NULL,
   `email` VARCHAR(45) NOT NULL,
   `recovery` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`idUser`, `username`))
+  PRIMARY KEY (`idUser`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8;
