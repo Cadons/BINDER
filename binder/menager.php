@@ -50,7 +50,7 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
         <?php
         if(isset($_GET['published']))
         {
-            echo "Pubblications Menager";
+            echo "Publications Menager";
         }
         else
         {
