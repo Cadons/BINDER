@@ -37,14 +37,23 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
             isAdmin('<?php echo $_SESSION['log']; ?>');
             function Delete_Section(id)
             {
-                if(confirm("Are you sure to delete this section?"))
-    {
+
+  swal({
+    title: "Are you sure?",
+    text: "Are you sure to delete this section??",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
                 var data=new FormData();
                 data.append("action","rm");
                 data.append("nameID",id);
                 sendpost(data,"sectionMenager.php","Section deleted!","Something hasn't worked retry!");
                 Section_List();
-    }
+    }});
+    
             }
             function Section_List()
             {
@@ -142,7 +151,7 @@ function UpdateSection()
 <?php 
 include('resources/general_body.php');
  BodyStart();?>
-<h4>Accounts Menager</h4>
+<h4>Categories Menager</h4>
 <hr>
               <button class = "btn btn-default btn-lg" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/sectionAdd.png" width="50%"></button>            
             

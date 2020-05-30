@@ -36,6 +36,9 @@ require("Connect_db.php");
 require_once("config/get_credezialies.php");
 
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 if(isset($_SESSION['log']))
 {
 	   header("location: menager.php");
@@ -60,7 +63,24 @@ if(isset($_SESSION['log']))
 			if($db->Check_Credezialies($_POST["usr"],$hashedUserPassword))
 			{
 				$_SESSION['log']=$db->getUserID($_POST["usr"]);
-			
+				$_SESSION['user']=$_POST["usr"];
+				
+
+				$log=fopen('log/access_log.txt','a');
+				function getUserIpAddr(){
+					if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+						//ip from share internet
+						$ip = $_SERVER['HTTP_CLIENT_IP'];
+					}elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+						//ip pass from proxy
+						$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+					}else{
+						$ip = $_SERVER['REMOTE_ADDR'];
+					}
+					return $ip;
+				}
+				fwrite($log,$_SESSION['user']." IP ADDRESS:[".getUserIpAddr()."] has logged at ".date("Y-m-d h:i:s a")."\n");
+				fclose($log);
 				header("location: /binder/menager.php");
 			}
 			else

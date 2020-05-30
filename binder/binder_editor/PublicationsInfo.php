@@ -26,7 +26,7 @@ else
                     {
                             $json=array();
                             $target=$_GET["id"];
-                            $sql="SELECT * FROM publications WHERE content=$target";
+                            $sql="SELECT * FROM publication WHERE content=$target";
                             $ris=$conn->query($sql);
                             if(mysqli_num_rows($ris)>0)
                             {
@@ -36,11 +36,12 @@ else
                             
                                    
                             $sql="SELECT
-                            *
+                            tag.Name
                           FROM
-                            publications_has_tag
-                              INNER JOIN tag ON publications_has_tag.tag_idtag = tag.idTag
-                              where publications_has_tag.publications_idpublication=$target";
+                            tag_has_publication
+                              INNER JOIN tag ON tag_has_publication.tag_idTag = tag.idTag
+                          WHERE
+                            tag_has_publication.publication_idPublication =$target";
                             //echo $sql;
                             $ris=$conn->query($sql);
                             if(mysqli_num_rows($ris)>0)
@@ -71,7 +72,7 @@ else
                     {
                         
                         $target=$_GET["id"];
-                        $sql="SELECT * FROM publications WHERE content=$target";
+                        $sql="SELECT * FROM publication WHERE content=$target";
                         $ris=$conn->query($sql);
                             if(mysqli_num_rows($ris)>0)
                             {
@@ -96,7 +97,7 @@ else
                     {
                         $json;
                         $target=$_GET["id"];
-                        $sql="SELECT * FROM publications WHERE content=$target";
+                        $sql="SELECT * FROM publication WHERE content=$target";
                         $ris=$conn->query($sql);
                             if(mysqli_num_rows($ris)>0)
                                 {
@@ -123,14 +124,14 @@ else
                         {
                             $json;
                             $target=$_GET["id"];
-                            $sql="SELECT * FROM publications WHERE content=$target";
+                            $sql="SELECT * FROM publication WHERE content=$target";
                             $ris=$conn->query($sql);
                                 if(mysqli_num_rows($ris)>0)
                                     {
                                         while($row=$ris->fetch_assoc())
                                             {
                                                 $json[0]=$row["preview"];
-                                                $sql="SELECT * FROM images WHERE idImage=".$row["preview"];
+                                                $sql="SELECT * from image WHERE idImage=".$row["preview"];
 
                                                 $ris=$conn->query($sql);
                                                 if(mysqli_num_rows($ris)>0)
@@ -158,7 +159,7 @@ else
                             {
                                 $json;
                                 $target=$_GET["id"];
-                                $sql="SELECT * FROM publications WHERE content=$target";
+                                $sql="SELECT * FROM publication WHERE content=$target";
                                 $ris=$conn->query($sql);
                                     if(mysqli_num_rows($ris)>0)
                                         {

@@ -51,7 +51,7 @@ public function Upload($file,$Dir)
 					$cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
 
 					$conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-					$sql="INSERT INTO images(name) values('$name')";
+					$sql="INSERT INTO image(name) values('$name')";
 					$conn->query($sql);
 
 

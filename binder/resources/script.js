@@ -47,12 +47,14 @@ function Search(tb)
 req.done(function (data) 
 
 {	
-data=decode(data);
+  if(data!="")
+  {
+    data=decode(data);
   var articlesData=JSON.parse(data);
   
   $("#tab").empty();
  
-  if(tb=="articles")
+  if(tb=="article")
   { 
     SetPageNumber(false,articlesData.length);
     PrintArticleList(articlesData,articlesData.length);
@@ -62,6 +64,11 @@ data=decode(data);
     SetPageNumber(true,articlesData.length);
     PrintArticleList(articlesData,articlesData.length,true);
   }
+  }else
+  {
+    $("#tab").empty();
+  }
+
   
 });
                         
@@ -213,24 +220,34 @@ function Account_List()
 }
 function Delete_Account(usr)
 {
-  var confirm_del=confirm("Are you sure to delete "+usr+" account?");
-  if(confirm_del)
-  {
-    $.get("config/account_core.php?del&usr="+usr, (data)=>{
-          if(data=='ok')
-          {
-            swal ( "Good Job!" ,  "Account has bin removed",  "success" );
-            Account_List();
-          }else if(data=="logout")
-          {
-            logout();
-          }
-          else
-          {
-            swal ( "Error!" ,  "ERROR:Account hasn't bin removed",  "error" );
-          }
-        });
-  }
+
+  swal({
+    title: "Are you sure?",
+    text: "Are you sure to delete "+usr+" account? You will not able to recover it",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      $.get("config/account_core.php?del&usr="+usr, (data)=>{
+        if(data=='ok')
+        {
+          swal ( "Good Job!" ,  "Account has bin removed",  "success" );
+          Account_List();
+        }else if(data=="logout")
+        {
+          logout();
+        }
+        else
+        {
+          swal ( "Error!" ,  "ERROR:Account hasn't bin removed",  "error" );
+        }
+      });
+
+    }
+  });
+
   
 }
 function Open_Update_Usr_Panel(usr)
@@ -429,7 +446,7 @@ function Edit(name)
 
 
 
-function Delete(id)
+function Delete(id,single=true)
 {
 
   if(window.location.href.indexOf("published")<0)
@@ -442,32 +459,68 @@ function Delete(id)
   */
         json=JSON.parse(data);
         data=decodeURI(json[0]);
-        var ok=confirm("Are you sure to delete "+data+"?");
-        if(ok)
+        if(single)
+        {
+          swal({
+            title: "Are you sure?",
+            text: "Are you sure to delete "+data+"?? You will not able to recover it",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.get("/binder/binder_editor/core.php?req=delete&id="+id, function( data ) {
+                if(data!="not_found"||data!="error")
+                {
+                    
+              
+                swal("Done","Article deleted", {
+              
+                  icon: "success",
+                }).then(function()
+                {
+               
+                             location.reload();
+                }); 
+                }
+                else
+                {
+             
+                  swal("Failed","Article not found", {
+                    icon: "error",
+                  });
+                }
+                 
+              /*
+        
+              data is response variable, and on response insert the code of the database inside the quill editor div
+              */
+              
+              });
+        
+            }
+          });
+        }else
         {
           $.get("/binder/binder_editor/core.php?req=delete&id="+id, function( data ) {
-          if(data!="not_found"||data!="error")
-          {
-              
-          alert("Article deleted");
-          }
-          else
-            alert("article not found");
-        /*
-
-        data is response variable, and on response insert the code of the database inside the quill editor div
-        */
-        
-        });
-        location.reload();
+           
+          /*
+    
+          data is response variable, and on response insert the code of the database inside the quill editor div
+          */
+          
+          }); 
         }
+ 
+
 });
   }
   
   else
-  Delete_pub(id); 
+  Delete_pub(id,single); 
 }
-function Delete_pub(id)
+function Delete_pub(id,single=true)
 {
   $.get("/binder/binder_editor/core.php?req=getbyid_pub&id="+id, function( data ) {
    
@@ -477,43 +530,84 @@ function Delete_pub(id)
   */
         json=JSON.parse(data);
         data=decodeURI(json[0]);
-        var ok=confirm("Are you sure to delete "+data+"?");
+        if(single)
+        {
+          swal({
+          title: "Are you sure?",
+          text: "Are you sure to delete "+data+"?? You will not able to recover it",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            $.get("/binder/binder_editor/core.php?req=delete_pub&id="+id, function( data ) {
+              if(data!="not_found"||data!="error")
+              {
+                  
+            
+              swal("Done","Article deleted", {
+            
+                icon: "success",
+              }).then(function()
+              {
+                           location.reload();
+              }); 
+              }
+              else
+              {
+           
+                swal("Failed","Article not found", {
+                  icon: "error",
+                });
+              }
+               
+            /*
+      
+            data is response variable, and on response insert the code of the database inside the quill editor div
+            */
+            
+            });
+      
+          }
+        });
+        }else
+        {
+          $.get("/binder/binder_editor/core.php?req=delete_pub&id="+id, function( data ) {
+
+          /*
     
-    if(ok)
-    {
-      $.get("/binder/binder_editor/core.php?req=delete_pub&id="+id, function( data ) {
-    if(data!="not_found"||data!="error")
-      {
-         
-      alert("Article deleted");
-      }
-      else
-        alert("article not found");
-    /*
-  
-    data is response variable, and on response insert the code of the database inside the quill editor div
-    */
-    
-  });
-  location.reload();
-    }
+          data is response variable, and on response insert the code of the database inside the quill editor div
+          */
+          
+          });
+        }
+        
+
   });
 }
 function New()
 {
-  var name=prompt("Insert article name");
-  data=new FormData();
-
-  if(name!=""&&name!=null)
-  {
-       data.append("req","create");
-  data.append("title",name);
-  sendpost(data,"/binder/binder_editor/core.php","Article created","Article not created");
  
-  location.reload();
-  }
-  else
-  return;
+  swal("Insert article name:", {
+    content: "input",
+  })
+  .then((value) => {
+   
+    data=new FormData();
+
+    if(value!=""&&value!=null)
+    {
+         data.append("req","create");
+    data.append("title",value);
+    sendpost(data,"/binder/binder_editor/core.php","Article created","Article not created");
+   
+    location.reload();
+    }
+    else
+    return;
+  });
+  
   
 }
 //Logout
@@ -558,13 +652,30 @@ function Select(id)
 }
 function DeleteSelection()
 {
+  swal({
+    title: "Are you sure?",
+    text: "Are you sure to remove selected articles?? You will not able to recover them",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      for(var i=0;i<SelectedArticles.length;i++)
+      {
+        Delete(SelectedArticles[i],false);
+      }
+      swal("Done","Article deleted", {
+      
+          icon: "success",
+        }).then(function()
+        {
+       
+                     location.reload();
+        }); 
+       
 
-    for(var i=0;i<SelectedArticles.length;i++)
-    {
-      Delete(SelectedArticles[i]);
-    }
-
-}
+}   }); }
 function GetList(published=false)
 {
 

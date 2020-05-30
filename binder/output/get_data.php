@@ -10,7 +10,7 @@ class get_data
         $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
         //echo $cred[1];
         $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-        $sql="SELECT * FROM publications";
+        $sql="SELECT * FROM publication";
     $ris=$conn->query($sql);
     $output=array();
     $i=0;
@@ -37,7 +37,7 @@ class get_data
         $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
         //echo $cred[1];
         $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-        $sql="SELECT * FROM publications";
+        $sql="SELECT * FROM publication";
     $ris=$conn->query($sql);
     $output=array();
     $i=0;
@@ -64,7 +64,7 @@ class get_data
         $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
         //echo $cred[1];
         $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-        $sql="SELECT * FROM publications WHERE idpublication=$id";
+        $sql="SELECT * FROM publication WHERE idpublication=$id";
     $ris=$conn->query($sql);
     if(mysqli_num_rows($ris)>0)
     {
@@ -72,7 +72,7 @@ class get_data
                         {
                            
                               
-                            $sql="SELECT * FROM articles WHERE idarticle=".$row['content'];
+                            $sql="SELECT * FROM article WHERE idarticle=".$row['content'];
                             $ris_art=$conn->query($sql);
                             $row_art=$ris_art->fetch_assoc();
                                 
@@ -88,7 +88,7 @@ class get_data
     }
     public static function GetPostTitle($id)
     {
-        $sql="SELECT * FROM publications WHERE idpublication=$id";
+        $sql="SELECT * FROM publication WHERE idpublication=$id";
         require_once("../config/get_credezialies.php");
     
     $obj=new getCredenziales();
@@ -107,7 +107,7 @@ class get_data
     }
     public static function GetPostContent($id)
     {
-        $sql="SELECT * FROM publications WHERE idpublication=$id";
+        $sql="SELECT * FROM publication WHERE idpublication=$id";
         require_once("../config/get_credezialies.php");
     
     $obj=new getCredenziales();
@@ -138,7 +138,7 @@ class get_data
     //echo $cred[1];
     $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
    
-    $sql="SELECT * FROM tag where name like '%$target%'";
+    $sql="SELECT idTag FROM tag where name like '%$target%'";
     $ris=$conn->query($sql);
         if(mysqli_num_rows($ris)>0)
         {
@@ -151,10 +151,10 @@ class get_data
              
              $idsTag=array();
              
-             //Research articles with target tag name and add to id string, it will be bind with the main query
+             //Research article with target tag name and add to id string, it will be bind with the main query
              foreach($titles as $e)
              {
-                $_sql="SELECT * FROM publications_has_tag WHERE Tag_idTag=$e";//check if there are articles with tags similar $target
+                $_sql="SELECT publication_idPublication FROM tag_has_publication WHERE Tag_idTag=$e";//check if there are article with tags similar $target
                 //echo $_sql;
                 $ris=$conn->query($_sql);
                if(mysqli_num_rows($ris)>0)//if there are print else check title 
@@ -164,14 +164,14 @@ class get_data
                   $i=0;
                     while($row=$ris->fetch_assoc())
                     {
-                        $idsTag[$i]=$row["publications_idpublication"];
+                        $idsTag[$i]=$row["publication_idPublication"];
                     }                   
                } 
               }
               $condition="";
               if(sizeof($idsTag)>0)
               {
-              $condition="OR idpublication in(";
+              $condition="OR idPublication in(";
             //  print_r($idsTag);
               $cont=0;//counter
               foreach($idsTag as $id)
@@ -189,11 +189,11 @@ class get_data
               
               }
             }
-                //Search articles by username
+                //Search article by username
               $userId=array();
 
-              //get users's id with username like target
-              $usrSql="SELECT idUser,username FROM users where username like '%$target%'";
+              //get user's id with username like target
+              $usrSql="SELECT idUser,username FROM user where username like '%$target%'";
               if($usernameRis=$conn->query($usrSql))
               {
                 if(mysqli_num_rows($usernameRis)>0)
@@ -203,11 +203,11 @@ class get_data
                 {
                     $userId[$index]=$row["idUser"];
                 }
-                //search and get publications' and articles' items with author field equal userid element
-                $publicationIdwithAuthor=array();//it contains the publications' id that has author id equal userid's array element
+                //search and get publication' and article' items with author field equal userid element
+                $publicationIdwithAuthor=array();//it contains the publication' id that has author id equal userid's array element
                 foreach($userId as $e)
                 {
-                $sqlUserPublication="SELECT publications.idpublication,publications.content,articles.author from publications inner join articles on publications.content=articles.idarticle where articles.author=$e";
+                $sqlUserPublication="SELECT publication.idpublication,publication.content,article.author from publication inner join article on publication.content=article.idarticle where article.author=$e";
                
                 if($pubUserID=$conn->query($sqlUserPublication))
                 {
@@ -243,16 +243,16 @@ class get_data
 
               }
                 
-              //if target is void select all publications
+              //if target is void select all publication
                 if($target==""||$target==null)
                 {
-                    $sql="SELECT * from publications inner join articles on publications.content=articles.idarticle";
+                    $sql="SELECT * from publication inner join article on publication.content=article.idarticle";
                    
                 }
                 else
                 {
 
-                    $sql="SELECT * from publications inner join articles on publications.content=articles.idarticle WHERE title like '%$target%' ".$condition;
+                    $sql="SELECT * from publication inner join article on publication.content=article.idarticle WHERE title like '%$target%' ".$condition;
                 }
                 
  //echo $sql;
@@ -283,7 +283,7 @@ class get_data
                         $json[$count]["content"]=$row["content"]; 
 
                            
-                           $sqlAuthor="SELECT idUser,username FROM users inner join articles on users.idUser=articles.author where idUser=".$row["author"];
+                           $sqlAuthor="SELECT idUser,username FROM user inner join article on user.idUser=article.author where idUser=".$row["author"];
                            if($risAuthor=$conn->query($sqlAuthor))
                            {
                             while($rowUsr=$risAuthor->fetch_assoc())//Load author name retrived from sqlAuthor query

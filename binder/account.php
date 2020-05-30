@@ -6,12 +6,22 @@
         session_destroy();
         header("location: /binder");
     }
- 
+    include('resources/general_body.php');
     ?>
     
 <html>
 <head>
-        <title>Accounts Menager</title>
+        <title><?php
+        $admin=check_Admin();
+        if($admin==1)
+        {
+          echo "Accounts Menager";
+        }else
+        {
+          echo "My Profile";
+        }
+
+        ?></title>
         <script src="/binder/resources/js/jquery.js"></script>
         <meta name="viewport" content="width=device-width, user-scalable=no,
 initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
@@ -39,9 +49,18 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 </head>
 <body>
 <?php 
-include('resources/general_body.php');
+
  BodyStart();?>
-<h4>Account Menager</h4>
+<h4><?php
+        if($admin==1)
+        {
+          echo "Accounts Menager";
+        }else
+        {
+          echo "My Profile";
+        }
+
+        ?></h4>
 <hr>
               <button class = "btn btn-default btn-lg" id="add" type="button" data-toggle="modal" data-target="#create_account" onclick="Open_New_Usr_Panel()"><img src="/binder/resources/template/icons/add.png" width="50%"></button> 
               <button class = "btn btn-default btn-lg" type="button" onclick="Account_List()"><img src="/binder/resources/template/icons/update.png" width="50%"></button> 

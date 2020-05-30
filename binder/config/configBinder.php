@@ -38,16 +38,7 @@ else
    $con=new MySqli($db_host,$db_usr,$db_psw,$db_name);
 
 }
-//create table {login}{articles}{publictions}
-/*
-CREATE TABLE Persons (
-    PersonID int NOT NULL AUTO_INCREMENT,
-    LastName varchar(255),
-    FirstName varchar(255),
-    Address varchar(255),
-    City varchar(255) 
-);
-*/
+
 
 //Login
 $report="";
@@ -70,7 +61,7 @@ $configFile=fopen("binder.sql","r");
 $sql.=fread($configFile,filesize("binder.sql"));
 fclose($configFile);
 $psw=hash ("sha256",$psw); 
-$sqlusr="INSERT INTO $db_name.users (username, password,isAdmin,email) VALUES ('$usr', '$psw',1,'$email')";
+$sqlusr="INSERT INTO $db_name.user (username, password,isAdmin,email) VALUES ('$usr', '$psw',1,'$email')";
 $querys=explode(";",$sql); 
 mysqli_select_db($con, $db_name);
 

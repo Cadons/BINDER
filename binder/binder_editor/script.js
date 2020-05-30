@@ -332,7 +332,7 @@ content= content.replace("'","%27");
 function Openbyid(id, published=false)
 {
   
-        Open(id,published);
+        Open(id);
     
   }
     
@@ -343,14 +343,13 @@ function Back()
 {
     location.href="/binder/menager.php";
 }
-function Open(id,pub=false)
+function Open(id)
 {
     
  
-  $( "div.ql-editor" ).empty(); 
-  ////console.log(title);
-  if(!pub)
-  {
+ 
+ 
+ 
       $.get("/binder/binder_editor/core.php?req=open&id="+id, function( data ) {
     if(data!="not_found")
     {
@@ -360,9 +359,9 @@ function Open(id,pub=false)
   
     //console.error(data);
      // $("#opened").html(title);
-      
+     $( "div.ql-editor" ).empty(); 
      data=decodeURI(data);
-     $( "div.ql-editor" ).html( data ); 
+     $( "div.ql-editor" ).html( data );
     }
       
     else
@@ -374,32 +373,8 @@ function Open(id,pub=false)
   */
 });
 
-  }
-  else
-  {
-    $.get("/binder/binder_editor/core.php?req=open_pub&id="+id, function( data ) {
-      if(data!="not_found")
-      {
+ 
   
-      
-     
-
-      //console.error(data);
-     //   $("#opened").html(title);
-        
-       
-       $( "div.ql-editor" ).html( data ); 
-      }
-        
-      else
-        alert("article not found");
-    /*
-  
-    data is response variable, and on response insert the code of the database inside the quill editor div
-    
-    */
-  });
-  }
 
 }
 
@@ -422,10 +397,16 @@ function Section_List()
 function Publish()
 {
 
-  var ok=confirm("Are you sure to publish this article?");
-  if(ok)
-  {    
 
+  swal({
+    title: "Are you sure?",
+    text: "Are you sure to publish this article??",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
       var title=$("#Ptitle").val();
      
       //alert(title);
@@ -448,7 +429,7 @@ function Publish()
       if(previewEnable)
       data.append("preview",imageId);
       else
-      data.append("preview","1");
+      data.append("preview",null);
       data.append("date",date);
       data.append("article_id",content);
       data.append("section",cat);
@@ -458,11 +439,19 @@ function Publish()
       Close();
      }else
      {
-      swal ( "Complete all fields" ,  "you must complete all fields" ,  "error" );
+      swal ( "Complete all fields" ,  "You must complete all fields" ,  "error" );
      }
+      swal("Done","Articles published!", {
+        icon: "success",
+      });
+    }
+  });
+    
+
+  
          
             
-  }
+  
 
   
 }

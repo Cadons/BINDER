@@ -46,7 +46,7 @@ req.done(function (data)
 
 {	
     if(data=="ok")
-    alert("Connection work!");
+    alert("Connection works!");
  else
  alert("Connection dosen't work!\n1)Check credenziales\n 2)Check database server is online\n 3)Check database server allow remote or localhost connection\n");
 

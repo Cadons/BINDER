@@ -63,7 +63,7 @@ initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
         <div class="input-group">
                 <input type="text" class="form-control" id="searchbar" placeholder="Search">
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-outline-secondary" type="submit" onclick="Search(this.id)" id="<?php if(isset($_GET['published'])) echo 'publications';else echo 'articles'; ?>">
+                  <button type="button" class="btn btn-outline-secondary" type="submit" onclick="Search(this.id)" id="<?php if(isset($_GET['published'])) echo 'publication';else echo 'article'; ?>">
                   <span><img src="/binder/resources/template/icons/search.png" width="50%"></span>
                   </button>
                 </div>

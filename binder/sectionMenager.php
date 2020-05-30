@@ -20,7 +20,7 @@ if(isset($_GET["action"]))
         {
           
              
-                $sql="SELECT * FROM ".$cred[3].".sections";
+                $sql="SELECT * FROM ".$cred[3].".section";
                $ris= $conn->query($sql);
                 if(mysqli_num_rows($ris)>0)
                 {
@@ -51,7 +51,7 @@ if(isset($_GET["action"]))
              if(isset($_GET["name"]))
              {
                  $name=$_GET["name"];
-                    $sql="SELECT * FROM ".$cred[3].".sections WHERE name='$name'";
+                    $sql="SELECT * FROM ".$cred[3].".section WHERE name='$name'";
                $ris= $conn->query($sql);
                 if(mysqli_num_rows($ris)>0)
                 {
@@ -85,7 +85,7 @@ if(isset($_POST["action"]))
                 if(isset($_POST["name"])&&isset($_POST["nameID"]))
                 {
                     $name=$_POST["name"];
-                    $sql="UPDATE ".$cred[3].".sections SET name='$name' WHERE idSection=".$_POST["nameID"];
+                    $sql="UPDATE ".$cred[3].".section SET name='$name' WHERE idSection=".$_POST["nameID"];
                     if($conn->query($sql))
                     {
                         echo "done";
@@ -103,7 +103,7 @@ if(isset($_POST["action"]))
                 if(isset($_POST["name"]))
                 {
                     $name=$_POST["name"];
-                    $sql="INSERT INTO ".$cred[3].".sections (name) VALUES('$name')";
+                    $sql="INSERT INTO ".$cred[3].".section (name) VALUES('$name')";
                     if($conn->query($sql))
                     {
                         echo "done";
@@ -119,13 +119,9 @@ if(isset($_POST["action"]))
             
             case "rm":
                 {
-                    if(isset($_POST["nameID"]))
-                    {
-                           $sql="UPDATE ".$cred[3].".publications SET idSection=null WHERE idSection=".$_POST["nameID"];
-               
-                        if($conn->query($sql))
-                        {
-                              $sql="DELETE FROM ".$cred[3].".sections WHERE idSection=".$_POST["nameID"];
+                  
+                      
+                              $sql="DELETE FROM ".$cred[3].".section WHERE idSection=".$_POST["nameID"];
                             if($conn->query($sql))
                             {
                             echo "done";
@@ -133,13 +129,10 @@ if(isset($_POST["action"]))
                             {
                                 echo "failed "; 
                             }
-                        }
-                        else
-                        {
-                            echo "failed";
-                        }
+              
+                   
                         
-                    }
+                    
                     break;
                 }
     }

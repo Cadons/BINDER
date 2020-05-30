@@ -39,7 +39,7 @@ if(isset($_POST["email"])&&isset($_POST["check"]))
       
  function checkEmail($_email,$conn,$dbName)
  {
-    $_sql="SELECT email FROM ".$dbName.".users where email='$_email'";
+    $_sql="SELECT email FROM ".$dbName.".user where email='$_email'";
     
     $_ris=$conn->query($_sql);
     if(mysqli_num_rows($_ris)>0)
@@ -55,7 +55,7 @@ if(isset($_POST["email"])&&isset($_POST["check"]))
 function SendEmail($conn,$emailSettings,$urlCode,$dbName)
 {
     $url=$_SERVER['HTTP_HOST']."/binder/UpdatePassword.php?id=".$urlCode;//compose url to recover data
-    $my_msg="Hi, to reset password click the following link:<br><a href='".$url."'>Reset Passoword</a>";
+    $my_msg="Hi, to reset password click the following link:<br><a href='".$url."'>Reset Password</a>";
   if(isset($_POST["email"]))
         { 
              $user_email=$_POST["email"];
@@ -63,10 +63,10 @@ function SendEmail($conn,$emailSettings,$urlCode,$dbName)
             if($emailSettings[4]=="0")
             {
             
-                $sql="UPDATE $dbName.users SET recovery='$urlCode' WHERE email='$user_email'";
+                $sql="UPDATE $dbName.user SET recovery='$urlCode' WHERE email='$user_email'";
             
                 $conn->query($sql);
-                $v=SMTP_email($user_email,$my_msg,$emailSettings[0],$emailSettings[1],$emailSettings[2],$emailSettings[3],"Reset Passowrd");
+                $v=SMTP_email($user_email,$my_msg,$emailSettings[0],$emailSettings[1],$emailSettings[2],$emailSettings[3],"Reset Password");
                 
                
              
@@ -90,7 +90,7 @@ function ChangePassword($conn,$code,$password,$dbName)
 {
     $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
-    $sql="UPDATE ".$dbName.".users SET password='$hashedPassword', recovery=null where recovery='$code'";
+    $sql="UPDATE ".$dbName.".user SET password='$hashedPassword', recovery=null where recovery='$code'";
     if($conn->query($sql))
     {
         echo "done";

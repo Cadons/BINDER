@@ -10,7 +10,23 @@ require_once("../../binder/config/get_credezialies.php");
   require_once("../binder/config/get_credezialies.php");
 }
 
-
+        
+function check_Admin()
+{ 
+  $obj=new getCredenziales();
+  $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
+  $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
+  $sql="SELECT idUser FROM ".$cred[3].".user WHERE idUser=".$_SESSION["log"]." AND isAdmin=1";//check if user is admin
+  $ris=$conn->query($sql);
+  if(mysqli_num_rows($ris)>0)
+  {
+       return 1;
+  }
+  else
+  {
+     return 0;
+  }
+}
 function BodyStart()
 {
    ?>   <nav class="menu-bar">
@@ -54,7 +70,7 @@ function BodyStart()
                                           $obj=new getCredenziales();
                                           $cred=array($obj->getHost(),$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());//$obj->getUsername(),$obj->getPassword(),$obj->getDatabase_Name());
                                           $conn=new MySqli($cred[0],$cred[1],$cred[2],$cred[3]);
-                                          $sql="SELECT idUser FROM ".$cred[3].".users WHERE idUser=".$_SESSION["log"]." AND isAdmin=1";//check if user is admin
+                                          $sql="SELECT idUser FROM ".$cred[3].".user WHERE idUser=".$_SESSION["log"]." AND isAdmin=1";//check if user is admin
                                           $ris=$conn->query($sql);
                                           if(mysqli_num_rows($ris)>0)
                                           {
@@ -86,7 +102,7 @@ function BodyStart()
                                          ?>
                                                <li>
                                     
-                                    <a href="/binder/account.php"><p class="label-menu">Account Menager</p></a>
+                                    <a href="/binder/account.php"><p class="label-menu">My Profile</p></a>
                                   </li>
                               <?php
                                        }
@@ -142,7 +158,7 @@ function BodyStart()
                                ?>
                                      <li>
                           
-                          <a href="/binder/account.php"><p class="label-menu">Account Menager</p></a>
+                          <a href="/binder/account.php"><p class="label-menu">My Profile</p></a>
                         </li>
                     <?php
                              }

@@ -1,7 +1,7 @@
 <?php
 function check_Admin_internal($conn,$id,$cred)
 {
-    $sql="SELECT idUser FROM ".$cred[3].".users WHERE idUser=$id AND isAdmin=1";
+    $sql="SELECT idUser FROM ".$cred[3].".user WHERE idUser=$id AND isAdmin=1";
     $ris=$conn->query($sql);
 
   

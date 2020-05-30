@@ -36,7 +36,7 @@ namespace DatabaseMenager
 					$psw = addslashes ($psw);
 				  }	
 				
-				$sql="select username,password from users where username='$user' and password='$psw'";
+				$sql="select username,password from user where username='$user' and password='$psw'";
 				$ris=$this->connection->query($sql);
 				  
 				if(mysqli_num_rows($ris)>0)
@@ -51,7 +51,7 @@ namespace DatabaseMenager
 			}
 			public function getUserID($username)
 			{
-				$sql="SELECT idUser from users where username='$username'";
+				$sql="SELECT idUser from user where username='$username'";
 				$ris=$this->connection->query($sql);
 				if(mysqli_num_rows($ris)>0)
 				{
