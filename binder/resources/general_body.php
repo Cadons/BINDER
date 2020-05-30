@@ -54,7 +54,7 @@ function BodyStart()
                                       <a href="/binder/menager.php"><p class="label-menu">Your Articles</p></a>
                                       </li>
                                       <li>
-                                      <a href="/binder/menager.php?published" ><p class="label-menu">Your Pubblications</p></a>
+                                      <a href="/binder/menager.php?published" ><p class="label-menu">Your Publications</p></a>
                                       </li>
                                       <li>
                                       <a href="#" onclick="New()"><p class="label-menu">Create New</p></a>
@@ -129,7 +129,7 @@ function BodyStart()
          <a href="/binder/menager.php"><p class="label-menu">Your Articles</p></a>
          </li>
          <li>
-         <a href="/binder/menager.php?published" ><p class="label-menu">Your Pubblications</p></a>
+         <a href="/binder/menager.php?published" ><p class="label-menu">Your Publications</p></a>
          </li>
          <li>
          <a href="#" onclick="New()"><p class="label-menu">Create New</p></a>
