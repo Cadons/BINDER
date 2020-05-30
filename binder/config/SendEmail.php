@@ -31,7 +31,7 @@ function SMTP_email($email,$msgMail,$_address,$_port,$_usr,$_psw,$subject){
         $mail->Password = $_psw; // Password account email con SMTP autenticato
         $mail->Priority = 1; // Highest priority - Email priority (1 = High, 3 = Normal, 5 = low)
         $mail->FromName = "Binder";
-        $mail->From='your_gmail_id@gmail.com';
+        $mail->From=$_usr;
         $mail->AddAddress($email);
         $mail->IsHTML(true);
         $mail->Subject  =  $subject;

@@ -7,23 +7,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema binder
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema binder
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `binder` ;
-USE `binder` ;
-
--- -----------------------------------------------------
--- Table `binder`.`user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `idUser` INT(11) NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -39,7 +23,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`article`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`article` (
+CREATE TABLE IF NOT EXISTS `article` (
   `idArticle` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL DEFAULT NULL,
   `lastEdit` DATETIME NULL DEFAULT NULL,
@@ -49,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `binder`.`article` (
   INDEX `fk_articles_users` (`author` ASC),
   CONSTRAINT `fk_articles_users`
     FOREIGN KEY (`author`)
-    REFERENCES `binder`.`user` (`idUser`)
+    REFERENCES `user` (`idUser`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -60,7 +44,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`image`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`image` (
+CREATE TABLE IF NOT EXISTS `image` (
   `idimage` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`idimage`))
@@ -72,7 +56,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`section`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`section` (
+CREATE TABLE IF NOT EXISTS `section` (
   `idSection` INT(11) NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idSection`))
@@ -84,7 +68,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`publication`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`publication` (
+CREATE TABLE IF NOT EXISTS `publication` (
   `idPublication` INT(11) NOT NULL AUTO_INCREMENT,
   `date` DATE NOT NULL,
   `content` INT(11) NOT NULL,
@@ -97,17 +81,17 @@ CREATE TABLE IF NOT EXISTS `binder`.`publication` (
   INDEX `fk_publication_section1_idx` (`idSection` ASC),
   CONSTRAINT `fk_publication_articles`
     FOREIGN KEY (`content`)
-    REFERENCES `binder`.`article` (`idArticle`)
+    REFERENCES `article` (`idArticle`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_publication_images1`
     FOREIGN KEY (`preview`)
-    REFERENCES `binder`.`image` (`idimage`)
+    REFERENCES `image` (`idimage`)
     ON DELETE SET NULL
     ON UPDATE CASCADE,
   CONSTRAINT `fk_publication_section1`
     FOREIGN KEY (`idSection`)
-    REFERENCES `binder`.`section` (`idSection`)
+    REFERENCES `section` (`idSection`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -118,7 +102,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`comment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`comment` (
+CREATE TABLE IF NOT EXISTS `comment` (
   `idcomment` INT(11) NOT NULL AUTO_INCREMENT,
   `User` VARCHAR(45) NULL DEFAULT NULL,
   `Text` MEDIUMTEXT NULL DEFAULT NULL,
@@ -131,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `binder`.`comment` (
   INDEX `fk_comments_publication1_idx` (`publication_idPublication` ASC),
   CONSTRAINT `fk_comments_publication1`
     FOREIGN KEY (`publication_idPublication`)
-    REFERENCES `binder`.`publication` (`idPublication`)
+    REFERENCES `publication` (`idPublication`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -141,7 +125,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`tag`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`tag` (
+CREATE TABLE IF NOT EXISTS `tag` (
   `idTag` INT(11) NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(56) NOT NULL,
   PRIMARY KEY (`idTag`))
@@ -153,7 +137,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `binder`.`tag_has_publication`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `binder`.`tag_has_publication` (
+CREATE TABLE IF NOT EXISTS `tag_has_publication` (
   `tag_idTag` INT(11) NOT NULL,
   `publication_idPublication` INT(11) NOT NULL,
   PRIMARY KEY (`tag_idTag`, `publication_idPublication`),
@@ -161,18 +145,18 @@ CREATE TABLE IF NOT EXISTS `binder`.`tag_has_publication` (
   INDEX `fk_tag_has_publication_tag1_idx` (`tag_idTag` ASC),
   CONSTRAINT `fk_tag_has_publication_publication1`
     FOREIGN KEY (`publication_idPublication`)
-    REFERENCES `binder`.`publication` (`idPublication`)
+    REFERENCES `publication` (`idPublication`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_tag_has_publication_tag1`
     FOREIGN KEY (`tag_idTag`)
-    REFERENCES `binder`.`tag` (`idTag`)
+    REFERENCES `tag` (`idTag`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-INSERT INTO `binder`.`section`(Name) VALUES('Generic');
+INSERT INTO `section`(Name) VALUES('Generic');
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
