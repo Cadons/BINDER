@@ -60,6 +60,8 @@ $sql=$sqlDB."USE ".$db_name.";";
 $configFile=fopen("binder.sql","r");
 $sql.=fread($configFile,filesize("binder.sql"));
 fclose($configFile);
+$pepper=bin2hex(random_bytes(5));
+$psw=$psw.$pepper;
 $psw=hash ("sha256",$psw); 
 $sqlusr="INSERT INTO $db_name.user (username, password,isAdmin,email) VALUES ('$usr', '$psw',1,'$email')";
 $querys=explode(";",$sql); 
@@ -77,6 +79,7 @@ $con->query($sqlusr);
 
 
 
+//Generate pepper code
 
 
     
@@ -97,8 +100,8 @@ $con->query($sqlusr);
             '.$EmailSettings.'
         },
         "last_configuration": "last configuration '.$date.'",
-        "isconfigurated":"ok"
-        
+        "isconfigurated":"ok",
+        "pepper":"'.$pepper.'"
     }';
     $file=fopen("config.json","w");
     fwrite($file,$credenziales_json);

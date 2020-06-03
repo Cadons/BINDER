@@ -104,6 +104,12 @@
              $get= $this->json;
              return $get['last_configuration'];
          }  
+         public function getPepper()
+         {
+             $get=array();
+             $get= $this->json;
+             return $get['pepper'];
+         } 
    }
 
 

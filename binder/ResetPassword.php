@@ -88,6 +88,10 @@ function SendEmail($conn,$emailSettings,$urlCode,$dbName)
 }
 function ChangePassword($conn,$code,$password,$dbName)
 {
+ 
+    $obj=new getCredenziales();
+
+    $password=$password.$obj->getPepper();
     $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
     $sql="UPDATE ".$dbName.".user SET password='$hashedPassword', recovery=null where recovery='$code'";

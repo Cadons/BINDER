@@ -114,7 +114,7 @@ function check_Admin($conn,$id)
             $id=$_GET['id'];
             //check existant
         
-            $sql="SELECT * FROM article WHERE idArticle=".$id." AND author=$logusr";
+            $sql="SELECT content FROM article WHERE idArticle=".$id." AND author=$logusr";
             $ris=$conn->query($sql);
           
             

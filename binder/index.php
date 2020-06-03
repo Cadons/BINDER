@@ -56,7 +56,7 @@ if(isset($_SESSION['log']))
 		
 		$db=new DatabaseMenager\Connect_db($cred[1],$cred[2],$cred[3]);
 	
-		$userPassword = $_POST["psw"]; 
+		$userPassword = $_POST["psw"].$obj->getPepper(); 
 		
 		$hashedUserPassword =hash ("sha256",$userPassword);//create hash for login
 

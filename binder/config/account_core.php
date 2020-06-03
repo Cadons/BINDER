@@ -23,7 +23,7 @@ if(isset($_POST["add"]))
     $usr=$_POST["usr"];
     $psw=$_POST["psw"];
     $email=$_POST["email"];
-$password = $psw;
+$password = $psw.$obj->getPepper();
 
 $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
@@ -120,17 +120,17 @@ else if(isset($_POST["update"]))
     $usr=$_POST["usr"];
     $psw=$_POST["psw"];
     $email=$_POST["email"];
-    $password = $psw;
+    $password = $psw.$obj->getPepper();
     $hashedPassword = hash ("sha256",$password);//create hash for database first param is password the second is a string called salt. it is used to create strong hash=> +security
 
     if(isset($psw))
     {
-       $sql="UPDATE ".$cred[3].".".$cred[3].".user SET password='$hashedPassword' where username='$usr'";
-   
+       $sql="UPDATE ".$cred[3].".user SET password='$hashedPassword' where username='$usr'";
+ 
     if($conn->query($sql))
          $report.="User update: ok\n";
     else
-        $report.="User update: failed\n".$sql;
+        $report.="User update: failed\n";
  
     }
     if(isset($email))
@@ -140,11 +140,12 @@ else if(isset($_POST["update"]))
     if($conn->query($sql))
          $report.="User update: ok\n";
     else
-        $report.="User update: failed\n".$sql;
+        $report.="User update: failed\n";
  
     }
     
         $privileges=$_POST["class"];
+
           $sql="SELECT username,idUser FROM ".$cred[3].".user WHERE username='$usr'";
             $ris=$conn->query($sql);
        
@@ -168,7 +169,7 @@ else if(isset($_POST["update"]))
                         $sql="UPDATE ".$cred[3].".user SET isAdmin=1 WHERE idUser=$id";
                         $conn->query($sql);
                       }
-                      echo $sql;
+                     
                      
         }
         echo "ok";
